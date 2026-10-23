@@ -1,1 +1,2 @@
-# blood-organ-donor-finder
+# Blood and Organ Donor Finder
+Group project (Python, Django, SQLite, Bootstrap).
