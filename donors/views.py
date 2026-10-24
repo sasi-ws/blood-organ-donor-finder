@@ -2,8 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 
-from .forms import DonorProfileForm
+from .forms import BLOOD_GROUPS, DonorProfileForm
 from .models import DonorProfile
 
 
@@ -42,3 +43,29 @@ def toggle_pause(request):
     else:
         messages.success(request, "Your listing is visible again.")
     return redirect("donors:edit_profile")
+
+def search_donors(request):
+    """Search donors by blood group and city. Open to everyone (no login)."""
+    blood_group = request.GET.get("blood_group", "")
+    city = request.GET.get("city", "").strip()
+    searched = bool(blood_group and city)
+    page_obj = None
+
+    if searched:
+        donors = DonorProfile.objects.filter(
+            blood_group=blood_group,
+            city__iexact=city,
+            hide_profile=False,
+            consent_given=True,
+            user__is_active=True,
+        ).order_by("-is_verified", "full_name")
+        paginator = Paginator(donors, 10)  # 10 per page
+        page_obj = paginator.get_page(request.GET.get("page"))
+
+    return render(request, "donors/search.html", {
+        "blood_groups": [g for g, _ in BLOOD_GROUPS],
+        "blood_group": blood_group,
+        "city": city,
+        "searched": searched,
+        "page_obj": page_obj,
+    })    
