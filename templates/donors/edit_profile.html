@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Donor profile | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 800px;">
+  <h1>{% if profile %}Edit my profile{% else %}Become a donor{% endif %}</h1>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-brand">Save changes</button>
+  </form>
+
+  {% if profile %}
+  <hr>
+  <h2>Availability and visibility</h2>
+  <form method="post" action="{% url 'donors:toggle_pause' %}">
+    {% csrf_token %}
+    {% if profile.hide_profile %}
+      <p>Your listing is <strong>paused</strong>. Nothing is deleted.</p>
+      <button type="submit" class="btn btn-outline-danger">Show my listing again</button>
+    {% else %}
+      <p>Your listing is <strong>visible</strong> in search.</p>
+      <button type="submit" class="btn btn-outline-danger">Pause my listing</button>
+    {% endif %}
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
