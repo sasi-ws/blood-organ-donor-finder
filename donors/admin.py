@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import DonorProfile
+
+
+@admin.register(DonorProfile)
+class DonorProfileAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "blood_group", "city", "is_verified", "hide_profile")
+    list_filter = ("blood_group", "is_verified", "hide_profile")

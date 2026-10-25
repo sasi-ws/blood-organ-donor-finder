@@ -35,6 +35,7 @@
             <div>
               <strong>{{ donor.full_name }}</strong>
               {% if donor.is_verified %}<span class="badge bg-success">Verified</span>{% endif %}
+              <span class="badge {% if donor.match_label == 'Exact match' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ donor.match_label }}</span>
               <div class="text-muted">{{ donor.city }}</div>
             </div>
           </div>
