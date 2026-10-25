@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organ Pledge</title>
+</head>
+<body>
+    <h1>Organ Pledge Form</h1>
+
+    <p>
+        Register your intention to pledge organs.
+        Please discuss your decision with your family.
+    </p>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <h3>Select the organs you wish to pledge</h3>
+
+        <label>
+            <input type="checkbox" name="organs" value="kidneys">
+            Kidneys
+        </label><br>
+
+        <label>
+            <input type="checkbox" name="organs" value="liver">
+            Liver
+        </label><br>
+
+        <label>
+            <input type="checkbox" name="organs" value="heart">
+            Heart
+        </label><br>
+
+        <label>
+            <input type="checkbox" name="organs" value="lungs">
+            Lungs
+        </label><br>
+
+        <label>
+            <input type="checkbox" name="organs" value="pancreas">
+            Pancreas
+        </label><br>
+
+        <label>
+            <input type="checkbox" name="organs" value="corneas">
+            Corneas
+        </label><br>
+
+        <label>
+            <input type="checkbox" name="organs" value="tissues">
+            Other tissues
+        </label><br><br>
+
+        <h3>Family Contact Details</h3>
+
+        <label for="family_contact_name">Family Contact Name:</label><br>
+        <input
+            type="text"
+            id="family_contact_name"
+            name="family_contact_name"
+            maxlength="100"
+            required
+        ><br><br>
+
+        <label for="family_contact_email">Family Contact Email:</label><br>
+        <input
+            type="email"
+            id="family_contact_email"
+            name="family_contact_email"
+            required
+        ><br><br>
+
+        <label>
+            <input
+                type="checkbox"
+                name="consent_given"
+                required
+            >
+            I confirm that I understand this is a pledge of intent
+            and I consent to submitting this information.
+        </label><br><br>
+
+        <button type="submit">Submit Organ Pledge</button>
+    </form>
+</body>
+</html>
