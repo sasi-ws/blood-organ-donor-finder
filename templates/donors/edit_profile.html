@@ -11,6 +11,18 @@
       <div class="alert alert-{{ message.tags }}">{{ message }}</div>
     {% endfor %}
   {% endif %}
+  {% if profile %}
+  <div class="card mb-3">
+    <div class="card-body">
+      {% if days_left > 0 %}
+        <strong>You can donate again in {{ days_left }} days</strong>
+        (on {{ next_date|date:"j M Y" }}). You stay hidden from search until then.
+      {% else %}
+        <strong>You are eligible to donate now.</strong>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
 
   <form method="post" novalidate>
     {% csrf_token %}
