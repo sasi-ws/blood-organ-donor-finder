@@ -146,3 +146,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # Business rules (one place each). Confirm values with the blood bank.
 GAP_DAYS = 120            # whole blood, 4 months
 PLATELET_GAP_DAYS = 14    # placeholder, to be confirmed
+
+# Make Django error messages use Bootstrap's red "danger" style
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {messages.ERROR: 'danger'}

@@ -1,0 +1,6 @@
+:root { --brand: #C62828; --brand-pink: #FCE8E6; }
+.btn-brand { background: var(--brand); color: #fff; border-radius: 8px; }
+.btn-brand:hover { background: #a31f1f; color: #fff; }
+.text-brand { color: var(--brand); }
+.card { border-radius: 12px; }
+.banner-warning { background: #FFF1D6; color: #6b4a00; }
