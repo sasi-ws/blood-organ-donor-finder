@@ -45,11 +45,13 @@
           <form method="post" action="{% url 'accounts:logout' %}" class="d-flex">
             {% csrf_token %}
             <button type="submit" class="btn btn-link nav-link">Log out</button>
-          </form>
-          {% else %}
-          <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
-          <a class="btn btn-brand ms-lg-2" href="{% url 'accounts:register' %}">Register</a>
-          {% endif %}
+        </form>
+         <a class="nav-link small text-danger" href="{% url 'accounts:delete' %}">Delete account</a>
+
+        {% else %}
+           <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
+           <a class="btn btn-brand ms-lg-2" href="{% url 'accounts:register' %}">Register</a>
+        {% endif %}
         </div>
       </div>
     </div>

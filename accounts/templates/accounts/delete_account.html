@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Delete account | Donor Finder{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card border-danger">
+      <div class="card-body">
+        <h1 class="h4 text-danger fw-bold">Delete my account</h1>
+        <p>
+          This permanently removes your profile, donation history, pledges, and
+          contact requests. <strong>It cannot be undone.</strong>
+        </p>
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="confirm" required>
+            <label class="form-check-label" for="confirm">Yes, I want to delete my account.</label>
+          </div>
+          <button type="submit" class="btn btn-danger">Delete my account</button>
+          <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

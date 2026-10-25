@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Find donors | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 800px;">
+  <h1>Find donors</h1>
+  <div class="alert alert-warning">Donation is always free. Never pay a donor.</div>
+
+  <form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+      <label class="form-label" for="blood_group">Blood group needed</label>
+      <select class="form-select" name="blood_group" id="blood_group">
+        {% for g in blood_groups %}
+          <option value="{{ g }}" {% if g == blood_group %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-5">
+      <label class="form-label" for="city">City</label>
+      <input class="form-control" type="text" name="city" id="city" value="{{ city }}" placeholder="e.g. Colombo">
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+      <button type="submit" class="btn btn-brand w-100">Find donors</button>
+    </div>
+  </form>
+
+  {% if searched %}
+    <h2 class="h5">Donors for {{ blood_group }} in {{ city }}</h2>
+    {% if page_obj.object_list %}
+      {% for donor in page_obj %}
+        <div class="card mb-2">
+          <div class="card-body d-flex align-items-center gap-3">
+            <span class="badge bg-danger fs-6">{{ donor.blood_group }}</span>
+            <div>
+              <strong>{{ donor.full_name }}</strong>
+              {% if donor.is_verified %}<span class="badge bg-success">Verified</span>{% endif %}
+              <div class="text-muted">{{ donor.city }}</div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+
+      <nav class="mt-3">
+        {% if page_obj.has_previous %}
+          <a href="?blood_group={{ blood_group|urlencode }}&city={{ city|urlencode }}&page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?blood_group={{ blood_group|urlencode }}&city={{ city|urlencode }}&page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+      </nav>
+    {% else %}
+      <p>No donors found. Try another city.</p>
+    {% endif %}
+    <p class="text-muted mt-3">Phone numbers are hidden until a donor accepts your request.</p>
+  {% endif %}
+</div>
+{% endblock %}
