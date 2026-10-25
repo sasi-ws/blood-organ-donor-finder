@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
+from .compatibility import compatible_donor_groups, match_label
 
 from .forms import BLOOD_GROUPS, DonorProfileForm
 from .models import DonorProfile
@@ -52,13 +53,17 @@ def search_donors(request):
     page_obj = None
 
     if searched:
-        donors = DonorProfile.objects.filter(
-            blood_group=blood_group,
+        donors = list(DonorProfile.objects.filter(
+            blood_group__in=compatible_donor_groups(blood_group),
             city__iexact=city,
             hide_profile=False,
             consent_given=True,
             user__is_active=True,
-        ).order_by("-is_verified", "full_name")
+        ))
+        for donor in donors:
+            donor.match_label = match_label(blood_group, donor.blood_group)
+        # Exact matches first, then verified donors, then by name
+        donors.sort(key=lambda d: (d.match_label != "Exact match", not d.is_verified, d.full_name))
         paginator = Paginator(donors, 10)  # 10 per page
         page_obj = paginator.get_page(request.GET.get("page"))
 
@@ -68,4 +73,4 @@ def search_donors(request):
         "city": city,
         "searched": searched,
         "page_obj": page_obj,
-    })    
+    })
