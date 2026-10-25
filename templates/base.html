@@ -31,6 +31,8 @@
            {% csrf_token %}
             <button type="submit" class="btn btn-link nav-link">Log out</button>
         </form>
+         <a class="nav-link small text-danger" href="{% url 'accounts:delete' %}">Delete account</a>
+
         {% else %}
            <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
            <a class="btn btn-brand ms-2" href="{% url 'accounts:register' %}">Register</a>
