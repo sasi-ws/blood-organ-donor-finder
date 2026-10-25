@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
-from django.core.paginator import Paginator
-from .compatibility import compatible_donor_groups, match_label
 
+from .compatibility import compatible_donor_groups, match_label
+from .eligibility import days_until_eligible, next_eligible_date
 from .forms import BLOOD_GROUPS, DonorProfileForm
 from .models import DonorProfile
 
@@ -25,7 +26,18 @@ def edit_profile(request):
     else:
         form = DonorProfileForm(instance=profile)
 
-    return render(request, "donors/edit_profile.html", {"form": form, "profile": profile})
+    days_left = 0
+    next_date = None
+    if profile:
+        days_left = days_until_eligible(profile.last_donation_date, profile.donor_type)
+        next_date = next_eligible_date(profile.last_donation_date, profile.donor_type)
+
+    return render(request, "donors/edit_profile.html", {
+        "form": form,
+        "profile": profile,
+        "days_left": days_left,
+        "next_date": next_date,
+    })
 
 
 @login_required
@@ -45,6 +57,7 @@ def toggle_pause(request):
         messages.success(request, "Your listing is visible again.")
     return redirect("donors:edit_profile")
 
+
 def search_donors(request):
     """Search donors by blood group and city. Open to everyone (no login)."""
     blood_group = request.GET.get("blood_group", "")
@@ -60,6 +73,8 @@ def search_donors(request):
             consent_given=True,
             user__is_active=True,
         ))
+        # Hide donors who are still inside their donation gap
+        donors = [d for d in donors if days_until_eligible(d.last_donation_date, d.donor_type) == 0]
         for donor in donors:
             donor.match_label = match_label(blood_group, donor.blood_group)
         # Exact matches first, then verified donors, then by name
