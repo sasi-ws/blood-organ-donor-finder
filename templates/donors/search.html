@@ -42,7 +42,10 @@
               {% if donor.is_verified %}<span class="badge bg-success">Verified</span>{% endif %}
               <span class="badge {% if donor.match_label == 'Exact match' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ donor.match_label }}</span>
               {% if donor.is_available_today %}<span class="badge bg-secondary">Available today</span>{% endif %}
-              <div class="text-muted">{{ donor.city }}</div>
+              <div class="text-muted">
+                {{ donor.current_city }}
+                {% if donor.travel_city %}<span class="badge bg-info text-dark">Travelling</span>{% endif %}
+              </div>
             </div>
           </div>
         </div>

@@ -27,3 +27,7 @@ class DonorProfile(models.Model):
     def is_available_today(self):
         """True while the 'I can donate today' switch is still within its 24 hours."""
         return bool(self.available_until and self.available_until > timezone.now())
+    @property
+    def current_city(self):
+        """The travel city while travel mode is on, otherwise the home city."""
+        return self.travel_city.strip() or self.city

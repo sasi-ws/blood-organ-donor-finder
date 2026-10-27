@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from datetime import timedelta
 
 from django.utils import timezone
+from django.db.models import Q
 
 from .compatibility import compatible_donor_groups, match_label
 from .eligibility import days_until_eligible, next_eligible_date
@@ -94,8 +95,8 @@ def search_donors(request):
 
     if searched:
         donors = list(DonorProfile.objects.filter(
+            Q(travel_city__iexact=city) | Q(city__iexact=city, travel_city=""),
             blood_group__in=compatible_donor_groups(blood_group),
-            city__iexact=city,
             hide_profile=False,
             consent_given=True,
             user__is_active=True,
