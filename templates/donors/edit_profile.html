@@ -33,6 +33,16 @@
   {% if profile %}
   <hr>
   <h2>Availability and visibility</h2>
+  <form method="post" action="{% url 'donors:toggle_available' %}" class="mb-3">
+    {% csrf_token %}
+    {% if profile.is_available_today %}
+      <p>You are <strong>available today</strong>. It switches off by itself after 24 hours.</p>
+      <button type="submit" class="btn btn-outline-danger">I can't donate today</button>
+    {% else %}
+      <p>Mark yourself available for the next 24 hours.</p>
+      <button type="submit" class="btn btn-brand">I can donate today</button>
+    {% endif %}
+  </form>
   <form method="post" action="{% url 'donors:toggle_pause' %}">
     {% csrf_token %}
     {% if profile.hide_profile %}
