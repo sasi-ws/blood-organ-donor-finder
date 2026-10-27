@@ -1,13 +1,12 @@
 from datetime import date, timedelta
-from django.utils import timezone
-
-from .models import DonorProfile
 
 from django.test import SimpleTestCase, TestCase
+from django.utils import timezone
 
 from .compatibility import CAN_RECEIVE_FROM, compatible_donor_groups, match_label
 from .eligibility import days_until_eligible, next_eligible_date
 from .forms import DonorProfileForm, calculate_age
+from .models import DonorProfile
 
 
 class CompatibilityTests(SimpleTestCase):
@@ -118,6 +117,8 @@ class AgeAndFormTests(TestCase):
 
     def test_bad_phone_is_rejected(self):
         self.assertFalse(DonorProfileForm(valid_form_data(phone="12345")).is_valid())
+
+
 class AvailableTodayTests(SimpleTestCase):
     def test_available_while_within_24_hours(self):
         donor = DonorProfile(available_until=timezone.now() + timedelta(hours=5))
