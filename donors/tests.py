@@ -130,3 +130,15 @@ class AvailableTodayTests(SimpleTestCase):
 
     def test_not_available_when_never_set(self):
         self.assertFalse(DonorProfile().is_available_today)
+class TravelModeTests(SimpleTestCase):
+    def test_home_city_when_travel_mode_is_off(self):
+        donor = DonorProfile(city="Colombo", travel_city="")
+        self.assertEqual(donor.current_city, "Colombo")
+
+    def test_travel_city_when_travel_mode_is_on(self):
+        donor = DonorProfile(city="Colombo", travel_city="Kandy")
+        self.assertEqual(donor.current_city, "Kandy")
+
+    def test_spaces_only_counts_as_off(self):
+        donor = DonorProfile(city="Colombo", travel_city="   ")
+        self.assertEqual(donor.current_city, "Colombo")
