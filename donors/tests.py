@@ -1,4 +1,7 @@
 from datetime import date, timedelta
+from django.utils import timezone
+
+from .models import DonorProfile
 
 from django.test import SimpleTestCase, TestCase
 
@@ -115,3 +118,14 @@ class AgeAndFormTests(TestCase):
 
     def test_bad_phone_is_rejected(self):
         self.assertFalse(DonorProfileForm(valid_form_data(phone="12345")).is_valid())
+class AvailableTodayTests(SimpleTestCase):
+    def test_available_while_within_24_hours(self):
+        donor = DonorProfile(available_until=timezone.now() + timedelta(hours=5))
+        self.assertTrue(donor.is_available_today)
+
+    def test_not_available_after_expiry(self):
+        donor = DonorProfile(available_until=timezone.now() - timedelta(minutes=1))
+        self.assertFalse(donor.is_available_today)
+
+    def test_not_available_when_never_set(self):
+        self.assertFalse(DonorProfile().is_available_today)
