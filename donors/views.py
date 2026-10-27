@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 from datetime import timedelta
+from datetime import date, timedelta
 
 from django.utils import timezone
 from django.db.models import Q
@@ -12,6 +13,7 @@ from .compatibility import compatible_donor_groups, match_label
 from .eligibility import days_until_eligible, next_eligible_date
 from .forms import BLOOD_GROUPS, DonorProfileForm
 from .models import DonorProfile
+from .quiz import check_quiz
 
 
 @login_required
@@ -137,3 +139,29 @@ def search_donors(request):
         "page_obj": page_obj,
         "query_string": params.urlencode(),
     })
+def eligibility_quiz(request):
+    """Self-check quiz: general guidance only. Nothing is saved."""
+    notes = None
+    error = ""
+
+    if request.method == "POST":
+        try:
+            age = int(request.POST.get("age", ""))
+            weight = float(request.POST.get("weight", ""))
+            last_raw = request.POST.get("last_donation_date", "")
+            last = date.fromisoformat(last_raw) if last_raw else None
+            if last and last > date.today():
+                raise ValueError
+        except ValueError:
+            error = "Please check your answers. Age and weight must be numbers, and the date can't be in the future."
+        else:
+            notes = check_quiz(
+                age=age,
+                weight_kg=weight,
+                last_donation_date=last,
+                feeling_ill=request.POST.get("feeling_ill") == "yes",
+                travelled_abroad=request.POST.get("travelled_abroad") == "yes",
+                recent_tattoo=request.POST.get("recent_tattoo") == "yes",
+            )
+
+    return render(request, "donors/quiz.html", {"notes": notes, "error": error})
