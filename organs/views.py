@@ -4,6 +4,10 @@ from django.contrib.auth.decorators import login_required
 from .models import OrganPledge
 
 
+def organ_pledge_info(request):
+    return render(request, "organs/organ_pledge_info.html")
+
+
 @login_required
 def organ_pledge_view(request):
     if request.method == "POST":
@@ -35,4 +39,3 @@ def organ_pledge_view(request):
 @login_required
 def organ_pledge_success(request):
     return render(request, "organs/organ_pledge_success.html")
-
