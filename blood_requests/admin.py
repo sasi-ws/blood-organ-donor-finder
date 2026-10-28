@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import BloodRequest, DonorResponse, Notification
 
-# Register your models here.
+admin.site.register(BloodRequest)
+admin.site.register(DonorResponse)
+admin.site.register(Notification)
