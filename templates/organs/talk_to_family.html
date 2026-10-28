@@ -1,0 +1,335 @@
+
+{% extends "base.html" %}
+
+{% block title %}Talk to My Family | Organ Donation{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <!-- Page Header -->
+            <div class="text-center mb-4">
+                <h1 class="display-6 fw-bold">
+                    Talk to My Family
+                </h1>
+                <p class="lead text-muted">
+                    Start a meaningful conversation about your organ
+                    donation wishes with the people who matter to you.
+                </p>
+            </div>
+
+            <!-- Introduction -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4">Why talk to your family?</h2>
+
+                    <p>
+                        Sharing your organ donation wishes helps your
+                        family understand your decision and know what
+                        matters to you. A calm, honest conversation can
+                        help everyone feel informed and prepared.
+                    </p>
+
+                    <div class="alert alert-info mb-0">
+                        <strong>Remember:</strong>
+                        This guide supports family discussion. A pledge
+                        records your intention and does not guarantee
+                        donation or determine medical eligibility.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Getting Started -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">
+                        How to start the conversation
+                    </h2>
+
+                    <div class="mb-3">
+                        <h3 class="h6 fw-bold">
+                            1. Choose a comfortable time
+                        </h3>
+                        <p class="mb-0">
+                            Find a quiet moment when everyone has time
+                            to listen and talk without feeling rushed.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h3 class="h6 fw-bold">
+                            2. Explain your wishes clearly
+                        </h3>
+                        <p class="mb-0">
+                            Explain why organ donation matters to you
+                            and what you hope your family will understand.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h3 class="h6 fw-bold">
+                            3. Listen to their questions
+                        </h3>
+                        <p class="mb-0">
+                            Give your family time to share their feelings
+                            and ask questions. It is okay if everyone
+                            needs more time to think.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div>
+                        <h3 class="h6 fw-bold">
+                            4. Find reliable information together
+                        </h3>
+                        <p class="mb-0">
+                            Discuss any concerns and consult an
+                            appropriate healthcare professional or
+                            authorised donation service for accurate
+                            information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Talking Points -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">Useful talking points</h2>
+
+                    <p>You could start with one of these sentences:</p>
+
+                    <div class="border rounded p-3 mb-3">
+                        “I want to share my thoughts about organ donation
+                        because this is important to me.”
+                    </div>
+
+                    <div class="border rounded p-3 mb-3">
+                        “I would like you to understand my wishes and
+                        the reasons behind my decision.”
+                    </div>
+
+                    <div class="border rounded p-3 mb-3">
+                        “What questions or concerns do you have about
+                        organ donation?”
+                    </div>
+
+                    <div class="border rounded p-3">
+                        “Can we find reliable information together so
+                        we can understand the process better?”
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-2">
+                        Family Discussion Checklist
+                    </h2>
+
+                    <p class="text-muted">
+                        Tick each item as you complete it. Your progress
+                        is kept on this page only.
+                    </p>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="check1">
+                        <label class="form-check-label" for="check1">
+                            I chose a suitable time to talk.
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="check2">
+                        <label class="form-check-label" for="check2">
+                            I explained my organ donation wishes.
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="check3">
+                        <label class="form-check-label" for="check3">
+                            I listened to my family's questions and concerns.
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="check4">
+                        <label class="form-check-label" for="check4">
+                            We discussed where to find reliable information.
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="check5">
+                        <label class="form-check-label" for="check5">
+                            My family knows where to find my recorded wishes.
+                        </label>
+                    </div>
+
+                    <div class="progress mt-4"
+                         role="progressbar"
+                         aria-label="Checklist progress"
+                         aria-valuemin="0"
+                         aria-valuemax="5"
+                         id="checklistProgress">
+                        <div class="progress-bar"
+                             id="progressBar"
+                             style="width: 0%">
+                            0 of 5 completed
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">
+                        Frequently Asked Questions
+                    </h2>
+
+                    <div class="accordion" id="familyFAQ">
+
+                        <div class="accordion-item">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#faqOne">
+                                    What if my family has concerns?
+                                </button>
+                            </h3>
+                            <div id="faqOne"
+                                 class="accordion-collapse collapse show"
+                                 data-bs-parent="#familyFAQ">
+                                <div class="accordion-body">
+                                    Listen respectfully and discuss each
+                                    concern calmly. You can seek
+                                    information from a qualified
+                                    healthcare professional or authorised
+                                    donation service.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#faqTwo">
+                                    Does registering a pledge guarantee donation?
+                                </button>
+                            </h3>
+                            <div id="faqTwo"
+                                 class="accordion-collapse collapse"
+                                 data-bs-parent="#familyFAQ">
+                                <div class="accordion-body">
+                                    No. A pledge records your intention.
+                                    Actual donation depends on applicable
+                                    laws, consent requirements and medical
+                                    suitability at the relevant time.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#faqThree">
+                                    Where can we get reliable information?
+                                </button>
+                            </h3>
+                            <div id="faqThree"
+                                 class="accordion-collapse collapse"
+                                 data-bs-parent="#familyFAQ">
+                                <div class="accordion-body">
+                                    Contact a qualified healthcare
+                                    professional or an authorised organ
+                                    donation organisation in your area.
+                                    They can explain local rules and
+                                    procedures.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="text-center mb-4">
+                <a href="{% url 'organs:organ_pledge' %}"
+                   class="btn btn-primary me-2 mb-2">
+                    Go to My Organ Pledge
+                </a>
+
+                <a href="{% url 'organs:organ_pledge_info' %}"
+                   class="btn btn-outline-secondary mb-2">
+                    Back to Information
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(
+        '#checklistProgress input[type="checkbox"], ' +
+        '.card input[type="checkbox"][id^="check"]'
+    );
+
+    const progressBar = document.getElementById("progressBar");
+    const progressContainer = document.getElementById(
+        "checklistProgress"
+    );
+
+    function updateProgress() {
+        const total = checkboxes.length;
+        let completed = 0;
+
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                completed++;
+            }
+        });
+
+        const percentage = total ? (completed / total) * 100 : 0;
+
+        progressBar.style.width = percentage + "%";
+        progressBar.textContent = completed + " of " + total + " completed";
+        progressContainer.setAttribute("aria-valuenow", completed);
+    }
+
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener("change", updateProgress);
+    });
+
+    updateProgress();
+});
+</script>
+
+{% endblock %}

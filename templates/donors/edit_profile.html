@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Donor profile | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 800px;">
+  <h1>{% if profile %}Edit my profile{% else %}Become a donor{% endif %}</h1>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  {% if profile %}
+  <div class="card mb-3">
+    <div class="card-body">
+      {% if days_left > 0 %}
+        <strong>You can donate again in {{ days_left }} days</strong>
+        (on {{ next_date|date:"j M Y" }}). You stay hidden from search until then.
+      {% else %}
+        <strong>You are eligible to donate now.</strong>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-brand">Save changes</button>
+  </form>
+
+  {% if profile %}
+  <hr>
+  <h2>Availability and visibility</h2>
+  <form method="post" action="{% url 'donors:toggle_available' %}" class="mb-3">
+    {% csrf_token %}
+    {% if profile.is_available_today %}
+      <p>You are <strong>available today</strong>. It switches off by itself after 24 hours.</p>
+      <button type="submit" class="btn btn-outline-danger">I can't donate today</button>
+    {% else %}
+      <p>Mark yourself available for the next 24 hours.</p>
+      <button type="submit" class="btn btn-brand">I can donate today</button>
+    {% endif %}
+  </form>
+  <form method="post" action="{% url 'donors:toggle_pause' %}">
+    {% csrf_token %}
+    {% if profile.hide_profile %}
+      <p>Your listing is <strong>paused</strong>. Nothing is deleted.</p>
+      <button type="submit" class="btn btn-outline-danger">Show my listing again</button>
+    {% else %}
+      <p>Your listing is <strong>visible</strong> in search.</p>
+      <button type="submit" class="btn btn-outline-danger">Pause my listing</button>
+    {% endif %}
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

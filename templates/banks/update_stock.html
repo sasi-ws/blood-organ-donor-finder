@@ -1,0 +1,72 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Update Blood Stock</h2>
+    <p class="text-muted">{{ bank.name }}</p>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if stocks %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Blood Group</th>
+                        <th>Current Units</th>
+                        <th>New Units</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stocks %}
+                    <tr>
+                        <td>{{ stock.blood_group }}</td>
+                        <td>{{ stock.units_available }}</td>
+                        <td>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input
+                                    type="hidden"
+                                    name="stock_id"
+                                    value="{{ stock.id }}"
+                                >
+                                <input
+                                    type="number"
+                                    name="units_available"
+                                    min="0"
+                                    step="1"
+                                    value="{{ stock.units_available }}"
+                                    class="form-control"
+                                    required
+                                >
+                        </td>
+                        <td>
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    Save
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No stock records found for your blood bank.
+            Please contact the administrator to add blood groups.
+        </div>
+    {% endif %}
+
+    <a href="{% url 'banks:stock_board' %}" class="btn btn-secondary">
+        View Public Stock Board
+    </a>
+</div>
+{% endblock %}

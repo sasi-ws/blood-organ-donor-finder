@@ -2,3 +2,5 @@
 Group project (Python, Django, SQLite, Bootstrap).
 gauri was here
 Gunaa jk
+Navi was here
+Simak
