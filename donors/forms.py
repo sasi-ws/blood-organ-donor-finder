@@ -34,7 +34,7 @@ class DonorProfileForm(forms.ModelForm):
         model = DonorProfile
         fields = [
             "full_name", "date_of_birth", "gender", "blood_group", "donor_type",
-            "city", "district", "phone", "last_donation_date", "consent_given",
+            "city", "district", "phone", "last_donation_date", "travel_city", "consent_given",
         ]
         widgets = {
             "date_of_birth": forms.DateInput(attrs={"type": "date"}),
@@ -43,6 +43,7 @@ class DonorProfileForm(forms.ModelForm):
         labels = {
             "consent_given": "I agree to be listed as a donor. I understand I can hide "
                              "or delete my profile at any time.",
+            "travel_city": "Travel mode: temporary city (optional). Clear it to turn off.",
         }
 
     def clean_consent_given(self):
