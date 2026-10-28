@@ -1,6 +1,8 @@
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import OrganPledge
 
 
@@ -26,6 +28,23 @@ def organ_pledge_view(request):
                     "consent_given": consent_given,
                 },
             )
+
+            send_mail(
+                subject="Organ Pledge Information",
+                message=(
+                    f"Dear {family_contact_name},\n\n"
+                    f"{request.user.username} has recorded an intention "
+                    "to pledge the following organs or tissues: "
+                    f"{', '.join(organs)}.\n\n"
+                    "This records an intention only. It does not confirm "
+                    "medical eligibility or guarantee that donation will occur. "
+                    "Please discuss their wishes together.\n"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[family_contact_email],
+                fail_silently=False,
+            )
+
             return redirect("organs:organ_pledge_success")
 
         return render(request, "organs/organ_pledge.html", {
