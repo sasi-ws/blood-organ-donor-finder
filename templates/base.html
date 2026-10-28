@@ -5,76 +5,124 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Donor Finder{% endblock %}</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link href="{% static 'css/theme.css' %}" rel="stylesheet">
+
   {% block extra_head %}{% endblock %}
 </head>
+
 <body class="bg-light d-flex flex-column min-vh-100">
 
-  {# Dengue banner: shows only when a context processor sets dengue_mode (Week 3) #}
+  {# Dengue banner: shows only when a context processor sets dengue_mode #}
   {% if dengue_mode %}
   <div class="banner-warning text-center py-2 small">
     Dengue season: platelet donors are needed.
   </div>
   {% endif %}
+
   {% block banner %}{% endblock %}
 
   <nav class="navbar navbar-expand-lg bg-white border-bottom">
     <div class="container">
+
       <a class="navbar-brand fw-bold" href="/">
         <i class="bi bi-droplet-fill text-brand"></i> Donor Finder
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-              data-bs-target="#mainNav" aria-controls="mainNav"
-              aria-expanded="false" aria-label="Toggle navigation">
+
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#mainNav"
+              aria-controls="mainNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="mainNav">
+
         <div class="navbar-nav mx-auto">
           <a class="nav-link" href="#">Find Donors</a>
           <a class="nav-link" href="#">Requests</a>
-          <a class="nav-link" href="#">Blood Banks</a>
-          <a class="nav-link" href="{% url 'organs:organ_pledge_info' %}">Organ Pledge</a>
-          <a class="nav-link" href="#">Awareness</a>
+
+          <!-- Fixed: added nav-link class for matching style and alignment -->
+          <a class="nav-link" href="{% url 'banks:stock_board' %}">
+            Blood Banks
+          </a>
+
+          <a class="nav-link" href="{% url 'organs:organ_pledge_info' %}">
+            Organ Pledge
+          </a>
+
+          <a class="nav-link" href="{% url 'core:awareness' %}">
+    Awareness
+</a>
         </div>
+
         <div class="navbar-nav align-items-lg-center">
+
           {% if user.is_authenticated %}
-          <a class="nav-link" href="#"><i class="bi bi-bell"></i> Alerts</a>
+
+          <a class="nav-link" href="#">
+            <i class="bi bi-bell"></i> Alerts
+          </a>
+
           <span class="nav-link">Hi, {{ user.username }}</span>
+
           <form method="post" action="{% url 'accounts:logout' %}" class="d-flex">
             {% csrf_token %}
-            <button type="submit" class="btn btn-link nav-link">Log out</button>
-        </form>
-         <a class="nav-link small text-danger" href="{% url 'accounts:delete' %}">Delete account</a>
+            <button type="submit" class="btn btn-link nav-link">
+              Log out
+            </button>
+          </form>
 
-        {% else %}
-           <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
-           <a class="btn btn-brand ms-lg-2" href="{% url 'accounts:register' %}">Register</a>
-        {% endif %}
+          <a class="nav-link small text-danger" href="{% url 'accounts:delete' %}">
+            Delete account
+          </a>
+
+          {% else %}
+
+          <a class="nav-link" href="{% url 'accounts:login' %}">
+            Log in
+          </a>
+
+          <a class="btn btn-brand ms-lg-2" href="{% url 'accounts:register' %}">
+            Register
+          </a>
+
+          {% endif %}
+
         </div>
       </div>
     </div>
   </nav>
 
   <main class="container py-4 flex-grow-1">
+
     {% for message in messages %}
       <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"></button>
       </div>
     {% endfor %}
+
     {% block content %}{% endblock %}
+
   </main>
 
   <footer class="border-top bg-white py-3 small text-muted">
     <div class="container">
       This platform connects people; it does not replace hospitals or blood banks.
       Always confirm donor eligibility with a medical professional.
-      <a href="#">Privacy policy</a> | <a href="#">Disclaimer</a>
+      <a href="#">Privacy policy</a> |
+      <a href="#">Disclaimer</a>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
