@@ -1,0 +1,23 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Organ Donation Pledge</h1>
+
+    <p>
+        An organ donation pledge records your intention to consider
+        donating organs or tissues. It does not guarantee that donation
+        will take place.
+    </p>
+
+    <p>
+        Please discuss your wishes with your family and seek guidance
+        from qualified healthcare professionals.
+    </p>
+
+    <a href="{% url 'organs:organ_pledge' %}" class="btn btn-primary">
+        Continue to Pledge Form
+    </a>
+</div>
+{% endblock %}

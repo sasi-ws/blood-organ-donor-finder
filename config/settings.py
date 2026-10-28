@@ -127,13 +127,13 @@ STATIC_URL = 'static/'
 
 
 # Email
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "noreply@blooddonor.local"
+
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+
 # ---- Project settings ----
 AUTH_USER_MODEL = "accounts.User"
 LOGIN_URL = "/accounts/login/"
