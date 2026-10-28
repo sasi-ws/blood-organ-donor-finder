@@ -26,7 +26,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-change-me")
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    if h.strip()
+]
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if o.strip()
+]
 
 
 # Application definition
@@ -139,6 +148,17 @@ AUTH_USER_MODEL = "accounts.User"
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+# ---- Production settings ----
+STATIC_ROOT = BASE_DIR / "staticfiles"   # collectstatic copies files here
+
+if not DEBUG:
+    # Refuse to start online with the placeholder secret key
+    if SECRET_KEY == "dev-only-change-me":
+        raise RuntimeError("Set a real SECRET_KEY in .env before running with DEBUG=False")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
