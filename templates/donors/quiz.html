@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Can I donate? | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 700px;">
+  <h1>Can I donate blood?</h1>
+  <p class="text-muted">A quick check with general guidance only. Nothing you enter is saved.</p>
+
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+  {% if notes is not None %}
+    <div class="card mb-4">
+      <div class="card-body">
+        {% if notes %}
+          <h2 class="h5">Things to check</h2>
+          <ul>{% for note in notes %}<li>{{ note }}</li>{% endfor %}</ul>
+        {% else %}
+          <h2 class="h5">You may be able to donate.</h2>
+        {% endif %}
+        <p class="mb-0"><strong>This is general guidance, not medical advice.</strong>
+        The blood bank will check you privately before any donation. Always confirm with a medical professional.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label" for="age">Your age</label>
+      <input class="form-control" type="number" name="age" id="age" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="weight">Your weight (kg)</label>
+      <input class="form-control" type="number" step="0.1" name="weight" id="weight" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="last_donation_date">Last blood donation (leave empty if never)</label>
+      <input class="form-control" type="date" name="last_donation_date" id="last_donation_date">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="feeling_ill">Do you feel ill today?</label>
+      <select class="form-select" name="feeling_ill" id="feeling_ill">
+        <option value="no">No</option><option value="yes">Yes</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="travelled_abroad">Did you return from abroad less than 3 months ago?</label>
+      <select class="form-select" name="travelled_abroad" id="travelled_abroad">
+        <option value="no">No</option><option value="yes">Yes</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="recent_tattoo">Did you get a tattoo or piercing recently?</label>
+      <select class="form-select" name="recent_tattoo" id="recent_tattoo">
+        <option value="no">No</option><option value="yes">Yes</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-brand">Check</button>
+  </form>
+</div>
+{% endblock %}

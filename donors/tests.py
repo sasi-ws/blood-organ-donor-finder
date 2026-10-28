@@ -2,6 +2,7 @@ from datetime import date, timedelta
 
 from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
+from .quiz import check_quiz
 
 from .compatibility import CAN_RECEIVE_FROM, compatible_donor_groups, match_label
 from .eligibility import days_until_eligible, next_eligible_date
@@ -142,3 +143,38 @@ class TravelModeTests(SimpleTestCase):
     def test_spaces_only_counts_as_off(self):
         donor = DonorProfile(city="Colombo", travel_city="   ")
         self.assertEqual(donor.current_city, "Colombo")
+
+class QuizTests(SimpleTestCase):
+    today = date(2026, 10, 25)
+
+    def run_quiz(self, **overrides):
+        answers = dict(
+            age=30, weight_kg=60, last_donation_date=None,
+            feeling_ill=False, travelled_abroad=False, recent_tattoo=False,
+            today=self.today,
+        )
+        answers.update(overrides)
+        return check_quiz(**answers)
+
+    def test_no_problems(self):
+        self.assertEqual(self.run_quiz(), [])
+
+    def test_too_young(self):
+        self.assertTrue(self.run_quiz(age=17))
+
+    def test_first_time_donor_over_55(self):
+        self.assertTrue(self.run_quiz(age=56))
+
+    def test_experienced_donor_aged_56_is_fine(self):
+        last = self.today - timedelta(days=200)
+        self.assertEqual(self.run_quiz(age=56, last_donation_date=last), [])
+
+    def test_underweight(self):
+        self.assertTrue(self.run_quiz(weight_kg=48))
+
+    def test_inside_donation_gap(self):
+        last = self.today - timedelta(days=30)
+        self.assertTrue(self.run_quiz(last_donation_date=last))
+
+    def test_ill_travel_and_tattoo_each_add_a_note(self):
+        self.assertEqual(len(self.run_quiz(feeling_ill=True, travelled_abroad=True, recent_tattoo=True)), 3)

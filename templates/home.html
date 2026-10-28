@@ -1,5 +1,70 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}Donor Finder: Find a blood donor in minutes{% endblock %}
+
 {% block content %}
-  <h1 class="fw-bold">Find a blood donor in minutes.</h1>
-  <p class="text-muted">Project skeleton is working.</p>
+<section class="hero mb-4">
+  <h1 class="display-5">Find a blood donor in minutes.</h1>
+  <p class="lead text-secondary">
+    Search verified, eligible donors near you. Phone numbers stay private until a donor says yes.
+  </p>
+
+  {# TODO: replace action="#" with the search URL once P2's donor-search is merged #}
+  <form method="get" action="#" class="search-card row g-2 align-items-end mb-3">
+    <div class="col-12 col-md-4">
+      <label for="blood_group" class="form-label small text-secondary mb-1">Blood group needed</label>
+      <select id="blood_group" name="blood_group" class="form-select">
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option>
+        <option>O+</option><option>O-</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-5">
+      <label for="city" class="form-label small text-secondary mb-1">City</label>
+      <select id="city" name="city" class="form-select">
+        <option>Colombo</option>
+        <option>Gampaha</option>
+        <option>Negombo</option>
+        <option>Kandy</option>
+        <option>Galle</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-3">
+      <button type="submit" class="btn btn-brand w-100">Find donors</button>
+    </div>
+  </form>
+
+  {# TODO: replace href="#" with the post-request URL once P4's page exists #}
+  <a href="#" class="btn btn-brand-outline">Post an emergency request</a>
+</section>
+
+<section class="mb-4">
+  <h2 class="h4 fw-bold mb-3">How it works</h2>
+  <div class="row g-3">
+    <div class="col-12 col-md-4">
+      <div class="step-card">
+        <h3 class="h6 fw-bold">1. Search</h3>
+        <p class="mb-0 text-secondary small">Pick a blood group and city. We also show compatible groups, clearly labelled.</p>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="step-card">
+        <h3 class="h6 fw-bold">2. Request contact</h3>
+        <p class="mb-0 text-secondary small">The donor accepts or declines. Only then is the phone number shared.</p>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="step-card">
+        <h3 class="h6 fw-bold">3. Escalate if urgent</h3>
+        <p class="mb-0 text-secondary small">Emergency requests alert nearby cities, then the whole district.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# Placeholder text. Later this will come from real shortage data (FR-ADM-05) #}
+<div class="shortage-banner">
+  <strong>We need more O- donors in Colombo.</strong>
+  <a href="{% url 'accounts:register' %}" class="text-brand fw-bold text-decoration-none">Become a donor</a>
+</div>
 {% endblock %}
