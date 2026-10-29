@@ -20,6 +20,10 @@ def home(request):
     return render(request, "home.html")
 
 
+def awareness(request):
+    return render(request, "awareness.html")
+
+
 def eligible_donors():
     """Visible donors outside the donation gap.
     TODO: replace with P2's eligibility function once it is merged (NFR-MNT-02)."""

@@ -11,7 +11,13 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
 
-                    <h1 class="h3 mb-3">Organ Pledge Form</h1>
+                    <h1 class="h3 mb-3">
+                        {% if pledge %}
+                            Edit Organ Pledge
+                        {% else %}
+                            Organ Pledge Form
+                        {% endif %}
+                    </h1>
 
                     <p class="text-muted">
                         Register your intention to pledge organs.
@@ -24,7 +30,8 @@
                         </div>
                     {% endif %}
 
-                    <form method="POST">
+                    <form method="POST"
+                          action="{% if pledge %}{% url 'organs:edit_organ_pledge' %}{% else %}{% url 'organs:organ_pledge' %}{% endif %}">
                         {% csrf_token %}
 
                         <h2 class="h5 mb-3">
@@ -39,39 +46,19 @@
                                     name="organs"
                                     value="{{ value }}"
                                     id="organ_{{ value }}"
+                                    {% if value in selected_organs %}checked{% endif %}
                                 >
-                                <label class="form-check-label" for="organ_{{ value }}">
+                                <label
+                                    class="form-check-label"
+                                    for="organ_{{ value }}"
+                                >
                                     {{ label }}
                                 </label>
                             </div>
                         {% empty %}
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="organs" value="kidneys" id="kidneys">
-                                <label class="form-check-label" for="kidneys">Kidneys</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="organs" value="liver" id="liver">
-                                <label class="form-check-label" for="liver">Liver</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="organs" value="heart" id="heart">
-                                <label class="form-check-label" for="heart">Heart</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="organs" value="lungs" id="lungs">
-                                <label class="form-check-label" for="lungs">Lungs</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="organs" value="pancreas" id="pancreas">
-                                <label class="form-check-label" for="pancreas">Pancreas</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="organs" value="corneas" id="corneas">
-                                <label class="form-check-label" for="corneas">Corneas</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="organs" value="tissues" id="tissues">
-                                <label class="form-check-label" for="tissues">Other tissues</label>
+                            <div class="alert alert-warning">
+                                Organ options are not available.
+                                Please check the view configuration.
                             </div>
                         {% endfor %}
 
@@ -80,28 +67,38 @@
                         <h2 class="h5 mb-3">Family Contact Details</h2>
 
                         <div class="mb-3">
-                            <label for="family_contact_name" class="form-label">
+                            <label
+                                for="family_contact_name"
+                                class="form-label"
+                            >
                                 Family Contact Name
                             </label>
+
                             <input
                                 type="text"
                                 class="form-control"
                                 id="family_contact_name"
                                 name="family_contact_name"
                                 maxlength="100"
+                                value="{{ pledge.family_contact_name|default:'' }}"
                                 required
                             >
                         </div>
 
                         <div class="mb-3">
-                            <label for="family_contact_email" class="form-label">
+                            <label
+                                for="family_contact_email"
+                                class="form-label"
+                            >
                                 Family Contact Email
                             </label>
+
                             <input
                                 type="email"
                                 class="form-control"
                                 id="family_contact_email"
                                 name="family_contact_email"
+                                value="{{ pledge.family_contact_email|default:'' }}"
                                 required
                             >
                         </div>
@@ -112,19 +109,57 @@
                                 type="checkbox"
                                 id="consent_given"
                                 name="consent_given"
+                                {% if pledge.consent_given %}checked{% endif %}
                                 required
                             >
-                            <label class="form-check-label" for="consent_given">
-                                I understand this is a pledge of intent and
-                                consent to submitting this information.
+
+                            <label
+                                class="form-check-label"
+                                for="consent_given"
+                            >
+                                I understand this is a pledge of intent
+                                and consent to submitting this information.
                             </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
-                            Submit Organ Pledge
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            {% if pledge %}
+                                Save Changes
+                            {% else %}
+                                Submit Organ Pledge
+                            {% endif %}
                         </button>
-
                     </form>
+
+                    {% if pledge %}
+                        <hr class="my-4">
+
+                        <h2 class="h5">Withdraw Organ Pledge</h2>
+
+                        <p class="text-muted">
+                            Withdrawing will permanently remove your
+                            current pledge record.
+                        </p>
+
+                        <form
+                            method="POST"
+                            action="{% url 'organs:withdraw_organ_pledge' %}"
+                            onsubmit="return confirm('Are you sure you want to withdraw your organ pledge? This action cannot be undone.');"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-outline-danger w-100"
+                            >
+                                Withdraw Pledge
+                            </button>
+                        </form>
+                    {% endif %}
+
                 </div>
             </div>
 
@@ -132,4 +167,3 @@
     </div>
 </div>
 {% endblock %}
-

@@ -9,7 +9,7 @@
   </p>
 
   {# TODO: replace action="#" with the search URL once P2's donor-search is merged #}
-  <form method="get" action="#" class="search-card row g-2 align-items-end mb-3">
+ <form method="get" action="{% url 'donors:search' %}" class="search-card row g-2 align-items-end mb-3">
     <div class="col-12 col-md-4">
       <label for="blood_group" class="form-label small text-secondary mb-1">Blood group needed</label>
       <select id="blood_group" name="blood_group" class="form-select">
