@@ -121,3 +121,11 @@ def report_user(request, donor_id):
         form = ReportForm()
 
     return render(request, "trust/report.html", {"form": form, "donor": donor})
+def privacy_policy(request):
+    """Privacy policy page. Open to everyone (FR-PAG-01)."""
+    return render(request, "trust/privacy.html")
+
+
+def disclaimer(request):
+    """Medical disclaimer page. Open to everyone (FR-PAG-02)."""
+    return render(request, "trust/disclaimer.html")

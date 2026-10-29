@@ -13,4 +13,6 @@ urlpatterns = [
          {"decision": "declined"}, name="decline_request"),
     path("sent/", views.sent_requests, name="sent_requests"),
     path("report/<int:donor_id>/", views.report_user, name="report_user"),
+    path("privacy/", views.privacy_policy, name="privacy"),
+    path("disclaimer/", views.disclaimer, name="disclaimer"),
 ]
