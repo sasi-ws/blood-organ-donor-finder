@@ -2,13 +2,14 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-
+from datetime import timedelta
+from django.utils import timezone
 from donors.models import DonorProfile
 
 from .forms import ContactRequestForm
 from .models import ContactRequest
 
-
+DAILY_REQUEST_LIMIT = 10  # FR-CON-04: one place to change the limit
 @login_required  # visitors who are not logged in are sent to the login page (FR-SRC-09)
 def request_contact(request, donor_id):
     """A seeker writes a message and asks one donor for contact (FR-CON-01)."""
@@ -27,7 +28,14 @@ def request_contact(request, donor_id):
     if donor.user == request.user:
         messages.error(request, "You can't send a request to yourself.")
         return redirect("donors:search")
-
+    # Rate limit: at most 10 requests in the last 24 hours (FR-CON-04)
+    sent_today = ContactRequest.objects.filter(
+        seeker=request.user,
+        created_at__gte=timezone.now() - timedelta(days=1),
+    ).count()
+    if sent_today >= DAILY_REQUEST_LIMIT:
+        messages.error(request, f"You can send at most {DAILY_REQUEST_LIMIT} requests per day. Please try again tomorrow.")
+        return redirect("donors:search")
     # Don't allow a second pending request to the same donor
     already_pending = ContactRequest.objects.filter(
         seeker=request.user, donor=donor, status="pending"
@@ -84,3 +92,9 @@ def respond_to_request(request, request_id, decision):
     else:
         messages.success(request, "You declined the request.")
     return redirect("trust:my_requests")
+@login_required
+def sent_requests(request):
+    """The seeker sees their own requests. The phone shows only if accepted (FR-CON-03)."""
+    # seeker=request.user means nobody can see another person's requests
+    my_sent = ContactRequest.objects.filter(seeker=request.user).select_related("donor")
+    return render(request, "trust/sent_requests.html", {"requests_sent": my_sent})

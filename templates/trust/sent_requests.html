@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}My requests | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 700px;">
+  <h1 class="h3">My contact requests</h1>
+  <div class="alert alert-warning">Donation is always free. Never pay a donor.</div>
+
+  {% for req in requests_sent %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <span class="badge bg-danger">{{ req.donor.blood_group }}</span>
+        <strong class="ms-2">{{ req.donor.full_name }}</strong>
+        <span class="badge ms-2 {% if req.status == 'accepted' %}bg-success{% elif req.status == 'declined' %}bg-secondary{% else %}bg-warning text-dark{% endif %}">{{ req.get_status_display }}</span>
+        <p class="my-2 text-muted">"{{ req.message }}"</p>
+
+        {% if req.status == "accepted" %}
+          <div class="border rounded p-2">
+            Phone number, shared with you only:
+            <strong class="fs-5">{{ req.donor.phone }}</strong>
+          </div>
+        {% elif req.status == "pending" %}
+          <div class="small text-muted">Waiting for the donor to answer. The phone number stays hidden until they accept.</div>
+        {% else %}
+          <div class="small text-muted">The donor declined. The phone number stays hidden.</div>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">You haven't sent any requests yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}
