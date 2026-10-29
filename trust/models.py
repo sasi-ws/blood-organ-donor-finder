@@ -26,6 +26,8 @@ class ContactRequest(models.Model):
     message = models.CharField(max_length=300)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
+    is_flagged = models.BooleanField(default=False)   # money words found (FR-TRU-05)
+    flagged_words = models.CharField(max_length=100, blank=True)
 
     class Meta:
         ordering = ["-created_at"]  # newest first

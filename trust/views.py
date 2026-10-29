@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from datetime import timedelta
 from django.utils import timezone
 from donors.models import DonorProfile
+from .keywords import find_scam_words
 
 from .forms import ContactRequestForm, ReportForm
 from .models import ContactRequest, Report
@@ -50,6 +51,11 @@ def request_contact(request, donor_id):
             contact = form.save(commit=False)
             contact.seeker = request.user
             contact.donor = donor
+            found = find_scam_words(contact.message)
+            if found:
+                contact.is_flagged = True
+                contact.flagged_words = ", ".join(found)
+                messages.warning(request, "Your message mentions money. Donation is always free, and the admin may review this message.")
             contact.save()
             messages.success(request, "Your request was sent. The donor will see it on their dashboard.")
             return redirect("donors:search")
