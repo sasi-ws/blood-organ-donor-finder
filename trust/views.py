@@ -6,8 +6,8 @@ from datetime import timedelta
 from django.utils import timezone
 from donors.models import DonorProfile
 
-from .forms import ContactRequestForm
-from .models import ContactRequest
+from .forms import ContactRequestForm, ReportForm
+from .models import ContactRequest, Report
 
 DAILY_REQUEST_LIMIT = 10  # FR-CON-04: one place to change the limit
 @login_required  # visitors who are not logged in are sent to the login page (FR-SRC-09)
@@ -98,3 +98,26 @@ def sent_requests(request):
     # seeker=request.user means nobody can see another person's requests
     my_sent = ContactRequest.objects.filter(seeker=request.user).select_related("donor")
     return render(request, "trust/sent_requests.html", {"requests_sent": my_sent})
+
+@login_required
+def report_user(request, donor_id):
+    """Any logged-in user can report a donor profile (FR-TRU-02)."""
+    donor = get_object_or_404(DonorProfile, pk=donor_id)
+
+    if donor.user == request.user:
+        messages.error(request, "You can't report yourself.")
+        return redirect("donors:search")
+
+    if request.method == "POST":
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.reported_user = donor.user
+            report.save()
+            messages.success(request, "Thank you. The admin will review your report.")
+            return redirect("donors:search")
+    else:
+        form = ReportForm()
+
+    return render(request, "trust/report.html", {"form": form, "donor": donor})

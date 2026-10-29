@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Report a profile | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 600px;">
+  <h1 class="h3">Report a profile</h1>
+  <p class="text-muted">Reporting {{ donor.full_name }} ({{ donor.blood_group }}, {{ donor.current_city }}). The admin will review it. Donation is always free, so please report anyone who asks for money.</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label" for="{{ form.reason.id_for_label }}">{{ form.reason.label }}</label>
+      {{ form.reason }}
+      {% for error in form.reason.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="{{ form.details.id_for_label }}">{{ form.details.label }}</label>
+      {{ form.details }}
+      {% for error in form.details.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    </div>
+    <button type="submit" class="btn btn-brand">Send report</button>
+    <a href="{% url 'donors:search' %}" class="btn btn-outline-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}
