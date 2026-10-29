@@ -33,8 +33,19 @@
         {% include "accounts/_field.html" with field=form.district %}
       </div>
 
-      <div class="card card-body mb-3 bg-light">
-        {% include "accounts/_field.html" with field=form.agree %}
+            <div class="card card-body mb-3 bg-light">
+        <div class="form-check">
+          {{ form.agree }}
+          <label class="form-check-label" for="{{ form.agree.id_for_label }}">
+            I will give accurate information, I will never ask a donor for money,
+            and I have read the
+            <a href="{% url 'trust:privacy' %}" target="_blank" rel="noopener"
+               class="text-brand fw-semibold">privacy policy</a>.
+          </label>
+        </div>
+        {% for error in form.agree.errors %}
+          <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
       </div>
 
       <button type="submit" class="btn btn-brand">Create my account</button>
