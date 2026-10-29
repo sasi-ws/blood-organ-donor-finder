@@ -1,3 +1,4 @@
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -48,3 +49,38 @@ def request_contact(request, donor_id):
         form = ContactRequestForm()
 
     return render(request, "trust/request_contact.html", {"form": form, "donor": donor})
+
+@login_required
+def my_requests(request):
+    """The donor sees contact requests sent to them (FR-CON-02)."""
+    profile = DonorProfile.objects.filter(user=request.user).first()
+    if profile is None:
+        messages.error(request, "Please create your donor profile first.")
+        return redirect("donors:edit_profile")
+
+    all_requests = ContactRequest.objects.filter(donor=profile).select_related("seeker")
+    return render(request, "trust/my_requests.html", {
+        "pending": all_requests.filter(status="pending"),
+        "answered": all_requests.exclude(status="pending"),
+    })
+
+
+@login_required
+@require_POST  # changing data must never happen through a plain link
+def respond_to_request(request, request_id, decision):
+    """The donor accepts or declines one request."""
+    # donor__user=request.user means a donor can only answer requests sent to THEM
+    contact = get_object_or_404(ContactRequest, pk=request_id, donor__user=request.user)
+
+    if contact.status != "pending":
+        messages.info(request, "You already answered this request.")
+        return redirect("trust:my_requests")
+
+    contact.status = decision  # "accepted" or "declined"
+    contact.save()
+
+    if decision == "accepted":
+        messages.success(request, "You accepted the request.")
+    else:
+        messages.success(request, "You declined the request.")
+    return redirect("trust:my_requests")
