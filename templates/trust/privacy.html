@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy policy | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 760px;">
+  <h1 class="h3">Privacy policy</h1>
+  <p class="text-muted">We keep this short and simple. We collect only what is needed to connect donors with people who need blood.</p>
+
+  <h2 class="h5 mt-4">What we store</h2>
+  <ul>
+    <li>Your account: username, email, and a protected (hashed) password.</li>
+    <li>Donor details: name, date of birth, gender, blood group, donor type, city, district, phone number, and last donation date.</li>
+    <li>The only health-related data we keep is your blood group, donor type, availability, and last donation date. We never ask about illnesses, medicines, or private habits. The blood bank checks those privately.</li>
+    <li>Your messages, contact requests, and reports you send through the platform.</li>
+  </ul>
+
+  <h2 class="h5 mt-4">Who can see your information</h2>
+  <ul>
+    <li>Search results show only your name, blood group, city, and Verified status.</li>
+    <li>Your phone number is shown only to a person you have accepted. It is never shown in search results, on public request pages, or in share messages.</li>
+    <li>Administrators can see your profile so they can verify accounts and review reports.</li>
+  </ul>
+
+  <h2 class="h5 mt-4">Your choices</h2>
+  <ul>
+    <li>You can edit your profile at any time.</li>
+    <li>You can pause your listing so you are hidden from search without losing anything.</li>
+    <li>You can delete your account. This permanently removes your profile, your contact requests, and your pledges.</li>
+  </ul>
+
+  <h2 class="h5 mt-4">Consent</h2>
+  <p>We list you as a donor only after you tick the consent box. You can withdraw your consent by pausing or deleting your profile.</p>
+
+  <h2 class="h5 mt-4">Money</h2>
+  <p>Blood donation is always free. We never charge for donor contact, and nobody may ask you for payment. Please report anyone who does.</p>
+
+  <p class="text-muted small mt-4">This is a student project that currently uses fictional data. Read the <a href="{% url 'trust:disclaimer' %}">medical disclaimer</a> too.</p>
+</div>
+{% endblock %}
