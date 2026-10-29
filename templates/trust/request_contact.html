@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Request contact | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 600px;">
+  <h1 class="h3">Request contact</h1>
+  <div class="alert alert-warning">Donation is always free. Never pay a donor.</div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <span class="badge bg-danger fs-6">{{ donor.blood_group }}</span>
+      <strong class="ms-2">{{ donor.full_name }}</strong>
+      <div class="text-muted">{{ donor.current_city }}</div>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label" for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+      {{ form.message }}
+      {% for error in form.message.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+      <div class="form-text">Maximum 300 characters. Do not write phone numbers. The donor decides whether to share theirs.</div>
+    </div>
+    <button type="submit" class="btn btn-brand">Send request</button>
+    <a href="{% url 'donors:search' %}" class="btn btn-outline-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

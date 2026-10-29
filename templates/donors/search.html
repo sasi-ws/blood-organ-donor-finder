@@ -47,6 +47,7 @@
                 {% if donor.travel_city %}<span class="badge bg-info text-dark">Travelling</span>{% endif %}
               </div>
             </div>
+            <a class="btn btn-brand ms-auto" href="{% url 'trust:request_contact' donor.id %}">Request contact</a>
           </div>
         </div>
       {% endfor %}
