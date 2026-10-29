@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Staff dashboard{% endblock %}
+
+{% block content %}
+<h1 class="h3 fw-bold mb-0">Dashboard</h1>
+<p class="text-secondary">Staff only.</p>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3"><div class="step-card"><div class="small text-secondary">Total donors</div><div class="h2 fw-bold mb-0">{{ total_donors }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="step-card"><div class="small text-secondary">Verified donors</div><div class="h2 fw-bold mb-0">{{ verified_donors }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="step-card"><div class="small text-secondary">Open requests</div><div class="h2 fw-bold mb-0">{{ open_n }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="step-card"><div class="small text-secondary">Reports to review</div><div class="h2 fw-bold mb-0 text-brand">{{ reports_to_review }}</div></div></div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-12 col-lg-4"><div class="step-card"><h2 class="h6 fw-bold">Donors per blood group</h2><canvas id="groupChart" height="200"></canvas></div></div>
+  <div class="col-12 col-lg-4"><div class="step-card"><h2 class="h6 fw-bold">Requests per month</h2><canvas id="monthChart" height="200"></canvas></div></div>
+  <div class="col-12 col-lg-4"><div class="step-card">
+    <h2 class="h6 fw-bold">Open vs fulfilled requests</h2>
+    <div class="progress mb-2" style="height:22px">
+  <div class="progress-bar bg-success" style="width:{{ fulfilled_pct }}%"></div>
+</div>
+    <div class="d-flex justify-content-between small"><span><strong>{{ open_n }}</strong> open</span><span><strong>{{ done_n }}</strong> fulfilled</span></div>
+    <div class="small text-secondary">{{ fulfilled_pct }}% of requests have been fulfilled.</div>
+  </div></div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-12 col-lg-4"><div class="step-card">
+    <h2 class="h6 fw-bold">Shortage alerts</h2>
+    {% for s in shortages %}
+    <div class="d-flex justify-content-between border-bottom py-2">
+      <div><strong>{{ s.group }}</strong> in {{ s.city }}<div class="small text-secondary">{{ s.n }} eligible donor{{ s.n|pluralize }}</div></div>
+      {% include 'includes/status_pill.html' with text=s.level color=s.level|yesno:"red,amber" %}
+    </div>
+    {% empty %}<p class="text-secondary small mb-0">No shortages.</p>{% endfor %}
+  </div></div>
+
+  <div class="col-12 col-lg-4"><div class="step-card">
+    <h2 class="h6 fw-bold">Donors waiting for verification</h2>
+    {% for d in waiting %}
+    <div class="border-bottom py-2">
+      <strong>{{ d.full_name }}</strong>
+      <div class="small text-secondary">{{ d.blood_group }} | {{ d.city }}</div>
+      <div class="d-flex gap-2 mt-1">
+        <form method="post" action="{% url 'core:dashboard_verify' d.pk %}">{% csrf_token %}<button class="btn btn-brand btn-sm">Verify</button></form>
+        <form method="post" action="{% url 'core:dashboard_reject' d.pk %}">{% csrf_token %}<button class="btn btn-brand-outline btn-sm">Reject</button></form>
+      </div>
+    </div>
+    {% empty %}<p class="text-secondary small mb-0">Nobody is waiting.</p>{% endfor %}
+  </div></div>
+
+  <div class="col-12 col-lg-4"><div class="step-card">
+    <h2 class="h6 fw-bold">Reports and flagged items</h2>
+    <p class="text-secondary small mb-0">Coming soon. This fills in once the Report model is merged.</p>
+  </div></div>
+</div>
+
+<div class="step-card d-flex justify-content-between align-items-center">
+  <div><strong>Dengue season mode</strong><div class="small text-secondary">Shows a platelet-needed banner and highlights platelet requests.</div></div>
+  <form method="post" action="{% url 'core:dashboard_dengue' %}">{% csrf_token %}
+    <button class="btn {% if dengue_on %}btn-brand{% else %}btn-brand-outline{% endif %}">{% if dengue_on %}On{% else %}Off{% endif %}</button>
+  </form>
+</div>
+
+{{ chart_data|json_script:"chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+  const d = JSON.parse(document.getElementById("chart-data").textContent);
+  const opts = { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } };
+  new Chart(document.getElementById("groupChart"), { type: "bar",
+    data: { labels: d.groups, datasets: [{ data: d.group_counts, backgroundColor: "#C62828" }] }, options: opts });
+  new Chart(document.getElementById("monthChart"), { type: "bar",
+    data: { labels: d.months, datasets: [{ data: d.month_counts, backgroundColor: "#8f1b1b" }] }, options: opts });
+</script>
+{% endblock %}
