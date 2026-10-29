@@ -12,4 +12,5 @@ urlpatterns = [
     path("requests/<int:request_id>/decline/", views.respond_to_request,
          {"decision": "declined"}, name="decline_request"),
     path("sent/", views.sent_requests, name="sent_requests"),
+    path("report/<int:donor_id>/", views.report_user, name="report_user"),
 ]

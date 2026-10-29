@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import ContactRequest
+from .models import ContactRequest, Report
 
 
 class ContactRequestForm(forms.ModelForm):
@@ -18,3 +18,20 @@ class ContactRequestForm(forms.ModelForm):
             }),
         }
         labels = {"message": "Your message to the donor"}
+
+class ReportForm(forms.ModelForm):
+    """Reason and optional details for reporting a profile."""
+
+    class Meta:
+        model = Report
+        fields = ["reason", "details"]
+        widgets = {
+            "reason": forms.Select(attrs={"class": "form-select"}),
+            "details": forms.Textarea(attrs={
+                "rows": 3,
+                "maxlength": 500,
+                "class": "form-control",
+                "placeholder": "Optional: tell the admin what happened.",
+            }),
+        }
+        labels = {"reason": "Why are you reporting this profile?", "details": "Details"}
