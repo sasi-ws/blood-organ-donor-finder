@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.urls import reverse
 
 from donors.compatibility import compatible_donor_groups
 from donors.eligibility import days_until_eligible
@@ -54,7 +55,11 @@ def send_alerts(blood_request, stage=1):
             f"{blood_request.get_blood_type_display().lower()} needed at "
             f"{blood_request.hospital}, {blood_request.city}."
         )
-        Notification.objects.create(user=profile.user, message=message, link="")
+        Notification.objects.create(
+            user=profile.user,
+            message=message,
+            link=reverse("blood_requests:request_list"),
+        )
 
         # Console email for urgent and critical requests (FR-NOT-03).
         if blood_request.urgency in ("urgent", "critical") and profile.user.email:
