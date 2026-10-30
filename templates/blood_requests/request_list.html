@@ -33,6 +33,10 @@
               {% csrf_token %}
               <button type="submit" class="btn btn-outline-success">Mark as fulfilled</button>
             </form>
+          {% elif r.pk in offered_ids %}
+            <span class="badge bg-success p-2">You offered to help</span>
+          {% else %}
+            <a class="btn btn-brand" href="{% url 'blood_requests:offer_help' r.pk %}">I can help</a>
           {% endif %}
         </div>
       </div>
