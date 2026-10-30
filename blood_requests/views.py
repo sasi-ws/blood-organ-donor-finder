@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from .alerts import send_alerts
 
 from .forms import BloodRequestForm
 
@@ -13,9 +14,10 @@ def post_request(request):
             blood_request = form.save(commit=False)
             blood_request.requester = request.user
             blood_request.save()
-            messages.success(request, "Your request was posted.")
-            # Temporary: we will redirect to the requests list once it exists.
+            count = send_alerts(blood_request)
+            messages.success(request, f"Your request was posted. {count} donor(s) alerted.")
             return redirect("blood_requests:post_request")
+           
     else:
         form = BloodRequestForm(initial={"urgency": "normal"})
     return render(request, "blood_requests/post_request.html", {"form": form})
