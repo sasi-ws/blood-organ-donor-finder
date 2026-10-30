@@ -3,6 +3,7 @@ from datetime import date
 from django.contrib.auth import get_user_model
 from django.test import Client, SimpleTestCase, TestCase
 from django.urls import reverse
+from blood_requests.models import Notification
 
 from donors.models import DonorProfile
 
@@ -181,3 +182,32 @@ class RateLimitAndCsrfTests(TestCase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(ContactRequest.objects.count(), 0)
+class NotificationTests(TestCase):
+    """The seeker is told when a donor answers (FR-CON-05)."""
+
+    def setUp(self):
+        self.seeker = User.objects.create_user("seeker1", password=PASSWORD, role="seeker")
+        self.other_seeker = User.objects.create_user("seeker2", password=PASSWORD, role="seeker")
+        self.donor_user, self.donor = make_donor("donor1", "Janaka Test")
+        self.req = ContactRequest.objects.create(
+            seeker=self.seeker, donor=self.donor, message="Need O+ blood"
+        )
+
+    def test_accept_notifies_the_seeker(self):
+        self.client.force_login(self.donor_user)
+        self.client.post(reverse("trust:accept_request", args=[self.req.id]))
+        note = Notification.objects.get(user=self.seeker)
+        self.assertIn("accepted", note.message)
+        self.assertFalse(note.is_read)
+
+    def test_decline_notifies_the_seeker_without_the_donor_name(self):
+        self.client.force_login(self.donor_user)
+        self.client.post(reverse("trust:decline_request", args=[self.req.id]))
+        note = Notification.objects.get(user=self.seeker)
+        self.assertIn("declined", note.message)
+        self.assertNotIn("Janaka", note.message)
+
+    def test_nobody_else_is_notified(self):
+        self.client.force_login(self.donor_user)
+        self.client.post(reverse("trust:accept_request", args=[self.req.id]))
+        self.assertEqual(Notification.objects.filter(user=self.other_seeker).count(), 0)
