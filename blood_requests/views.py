@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -79,7 +79,7 @@ def notification_list(request):
 
 @login_required
 def offer_help(request, pk):
-    """Confirmation screen for 'I can help'. Not-logged-in users are sent to login first."""
+    """Confirmation screen for 'I can help'."""
     blood_request = get_object_or_404(BloodRequest, pk=pk, status="open")
     profile, error = check_can_offer(request.user, blood_request)
     if error:
@@ -102,7 +102,7 @@ def offer_help(request, pk):
             Notification.objects.create(
                 user=blood_request.requester,
                 message=message,
-                link=reverse("blood_requests:request_list"),
+                link=reverse("blood_requests:offers_received", args=[blood_request.pk]),
             )
             if blood_request.requester.email:
                 send_mail(
@@ -120,3 +120,58 @@ def offer_help(request, pk):
         "blood_requests/offer_help.html",
         {"r": blood_request, "profile": profile, "already": already},
     )
+
+
+@login_required
+def offers_received(request, pk):
+    """Requester only: units covered, donor cards, phone numbers."""
+    blood_request = get_object_or_404(BloodRequest, pk=pk, requester=request.user)
+    responses = blood_request.responses.filter(can_help=True).select_related(
+        "donor", "donor__donorprofile"
+    )
+    covered = responses.count()
+    return render(
+        request,
+        "blood_requests/offers_received.html",
+        {"r": blood_request, "responses": responses, "covered": covered},
+    )
+
+
+@login_required
+@require_POST
+def cancel_offer(request, pk):
+    blood_request = get_object_or_404(BloodRequest, pk=pk)
+    response = get_object_or_404(
+        DonorResponse, request=blood_request, donor=request.user, can_help=True, donated=False
+    )
+    response.delete()
+    if blood_request.status == "fulfilled":
+        blood_request.status = "open"
+        blood_request.save()
+    Notification.objects.create(
+        user=blood_request.requester,
+        message=f"A donor cancelled their offer for your {blood_request.blood_group} request.",
+        link=reverse("blood_requests:offers_received", args=[blood_request.pk]),
+    )
+    messages.success(request, "Your offer was cancelled.")
+    return redirect("blood_requests:request_list")
+
+
+@login_required
+@require_POST
+def donation_done(request, pk, response_id):
+    blood_request = get_object_or_404(BloodRequest, pk=pk, requester=request.user)
+    response = get_object_or_404(
+        DonorResponse, pk=response_id, request=blood_request, can_help=True
+    )
+    if not response.donated:
+        response.donated = True
+        response.save()
+        profile = response.donor.donorprofile
+        profile.last_donation_date = date.today()
+        profile.save()
+        if blood_request.responses.filter(donated=True).count() >= blood_request.units:
+            blood_request.status = "fulfilled"
+            blood_request.save()
+        messages.success(request, "Donation recorded. The donor is hidden until they can donate again.")
+    return redirect("blood_requests:offers_received", pk=pk)

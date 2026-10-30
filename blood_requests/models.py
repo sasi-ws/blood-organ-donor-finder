@@ -34,6 +34,7 @@ class DonorResponse(models.Model):
     can_help = models.BooleanField()
     viewed_at = models.DateTimeField(null=True, blank=True)
     responded_at = models.DateTimeField(auto_now_add=True)
+    donated = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ("request", "donor")  # one offer per donor per request
