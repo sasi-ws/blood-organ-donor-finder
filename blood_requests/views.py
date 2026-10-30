@@ -10,7 +10,7 @@ from django.views.decorators.http import require_POST
 from .alerts import send_alerts
 from .forms import BloodRequestForm
 from .models import BloodRequest
-
+from .models import BloodRequest, Notification
 
 @login_required
 def post_request(request):
@@ -56,3 +56,11 @@ def mark_fulfilled(request, pk):
     blood_request.save()
     messages.success(request, "Request marked as fulfilled. Thank you!")
     return redirect("blood_requests:request_list")
+
+
+@login_required
+def notification_list(request):
+    notes = list(Notification.objects.filter(user=request.user).order_by("-created_at")[:50])
+    # Mark as read after we built the list, so new ones still show as "new" this time.
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return render(request, "blood_requests/notification_list.html", {"notifications": notes})
