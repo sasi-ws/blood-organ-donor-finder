@@ -2,15 +2,18 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.db.models import Case, Count, IntegerField, Q, Value, When
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .alerts import send_alerts
 from .forms import BloodRequestForm
-from .models import BloodRequest
-from .models import BloodRequest, Notification
+from .models import BloodRequest, DonorResponse, Notification
+from .offers import check_can_offer
+
 
 @login_required
 def post_request(request):
@@ -30,7 +33,7 @@ def post_request(request):
 
 def request_list(request):
     """Open requests: critical first, then urgent, then normal, then newest."""
-    cutoff = timezone.now() - timedelta(hours=48)  # auto-expiry
+    cutoff = timezone.now() - timedelta(hours=48)
     open_requests = (
         BloodRequest.objects.filter(status="open", created_at__gte=cutoff)
         .annotate(
@@ -44,13 +47,22 @@ def request_list(request):
         )
         .order_by("urgency_rank", "-created_at")
     )
-    return render(request, "blood_requests/request_list.html", {"open_requests": open_requests})
+    offered_ids = set()
+    if request.user.is_authenticated:
+        offered_ids = set(
+            DonorResponse.objects.filter(donor=request.user, can_help=True)
+            .values_list("request_id", flat=True)
+        )
+    return render(
+        request,
+        "blood_requests/request_list.html",
+        {"open_requests": open_requests, "offered_ids": offered_ids},
+    )
 
 
 @login_required
 @require_POST
 def mark_fulfilled(request, pk):
-    # Only the person who posted the request can close it.
     blood_request = get_object_or_404(BloodRequest, pk=pk, requester=request.user)
     blood_request.status = "fulfilled"
     blood_request.save()
@@ -61,6 +73,50 @@ def mark_fulfilled(request, pk):
 @login_required
 def notification_list(request):
     notes = list(Notification.objects.filter(user=request.user).order_by("-created_at")[:50])
-    # Mark as read after we built the list, so new ones still show as "new" this time.
     Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
     return render(request, "blood_requests/notification_list.html", {"notifications": notes})
+
+
+@login_required
+def offer_help(request, pk):
+    """Confirmation screen for 'I can help'. Not-logged-in users are sent to login first."""
+    blood_request = get_object_or_404(BloodRequest, pk=pk, status="open")
+    profile, error = check_can_offer(request.user, blood_request)
+    if error:
+        messages.error(request, error)
+        return redirect("blood_requests:request_list")
+
+    already = DonorResponse.objects.filter(
+        request=blood_request, donor=request.user, can_help=True
+    ).exists()
+
+    if request.method == "POST":
+        if not already:
+            DonorResponse.objects.update_or_create(
+                request=blood_request, donor=request.user, defaults={"can_help": True}
+            )
+            message = (
+                f"A donor can help with your {blood_request.blood_group} request "
+                f"at {blood_request.hospital}."
+            )
+            Notification.objects.create(
+                user=blood_request.requester,
+                message=message,
+                link=reverse("blood_requests:request_list"),
+            )
+            if blood_request.requester.email:
+                send_mail(
+                    subject="A donor can help with your blood request",
+                    message=message,
+                    from_email=None,
+                    recipient_list=[blood_request.requester.email],
+                    fail_silently=True,
+                )
+        messages.success(request, "Thank you! The requester has been told you can help.")
+        return redirect("blood_requests:request_list")
+
+    return render(
+        request,
+        "blood_requests/offer_help.html",
+        {"r": blood_request, "profile": profile, "already": already},
+    )

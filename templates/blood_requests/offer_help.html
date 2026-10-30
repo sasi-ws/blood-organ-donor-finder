@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 600px;">
+  <a href="{% url 'blood_requests:request_list' %}" class="text-danger fw-bold small">Back to requests</a>
+  <h1 class="mt-2">Confirm you can help</h1>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5>
+        <span class="badge text-bg-light fs-5">{{ r.blood_group }}</span>
+        {{ r.get_blood_type_display }}, {{ r.units }} unit{{ r.units|pluralize }}
+      </h5>
+      <div class="text-muted">{{ r.hospital }}, {{ r.city }}</div>
+      <div class="text-muted">Needed by {{ r.needed_by|date:"d M, g:i A" }}</div>
+      {% if r.urgency == 'critical' %}<span class="badge bg-danger mt-2">Critical</span>{% endif %}
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <strong>You are eligible.</strong><br>
+    Your blood group {{ profile.blood_group }} can help with this request, and you are outside the donation gap.
+  </div>
+
+  <div class="card mb-3"><div class="card-body">
+    <div class="small fw-bold text-danger">BEFORE YOU CONFIRM</div>
+    The hospital will check that you are medically fit to donate. Donation is always free. Never accept payment.
+  </div></div>
+
+  <div class="card mb-3"><div class="card-body">
+    <div class="small fw-bold text-danger">YOUR PRIVACY</div>
+    Your phone number will be shared with this requester only. You can cancel your offer at any time.
+  </div></div>
+
+  {% if already %}
+    <div class="alert alert-info">You already offered to help with this request.</div>
+  {% else %}
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-brand w-100 mb-2">Yes, I can help</button>
+    </form>
+  {% endif %}
+  <a href="{% url 'blood_requests:request_list' %}" class="btn btn-outline-danger w-100">Cancel</a>
+</div>
+{% endblock %}
