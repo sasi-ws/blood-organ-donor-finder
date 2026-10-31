@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px;">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+    <h1 class="mb-0">Open blood requests</h1>
+    <a class="btn btn-brand" href="{% url 'blood_requests:post_request' %}">Post a request</a>
+  </div>
+  <p class="text-muted">Critical first. Requests close after 48 hours unless renewed.</p>
+
+  {% for r in open_requests %}
+    <div class="card mb-3 {% if r.urgency == 'critical' %}border-danger{% endif %}">
+      <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h5 class="mb-1">
+            <span class="badge text-bg-light fs-5">{{ r.blood_group }}</span>
+            {{ r.get_blood_type_display }}, {{ r.units }} unit{{ r.units|pluralize }}
+          </h5>
+          <div class="text-muted small">
+            {{ r.hospital }}, {{ r.city }} | Needed by {{ r.needed_by|date:"d M, g:i A" }}
+            | Posted {{ r.created_at|timesince }} ago
+          </div>
+          <div class="mt-2">
+            {% if r.urgency == 'critical' %}<span class="badge bg-danger">Critical</span>
+            {% elif r.urgency == 'urgent' %}<span class="badge bg-warning text-dark">Urgent</span>
+            {% else %}<span class="badge bg-secondary">Normal</span>{% endif %}
+            <span class="badge bg-light text-dark">{{ r.accepted }} donor{{ r.accepted|pluralize }} accepted</span>
+            <span class="badge bg-light text-dark">
+              {% if r.alert_stage == 1 %}Stage 1: city notified{% elif r.alert_stage == 2 %}Stage 2: nearby cities notified{% else %}Stage 3: whole district notified{% endif %}
+            </span>
+          </div>
+        </div>
+        <div>
+          {% if user == r.requester %}
+            <a class="btn btn-outline-danger mb-2" href="{% url 'blood_requests:offers_received' r.pk %}">View offers</a>
+            <form method="post" action="{% url 'blood_requests:mark_fulfilled' r.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-success">Mark as fulfilled</button>
+            </form>
+          {% elif r.pk in offered_ids %}
+            <span class="badge bg-success p-2">You offered to help</span>
+            <form method="post" action="{% url 'blood_requests:cancel_offer' r.pk %}" class="mt-2">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-secondary">Cancel my offer</button>
+            </form>
+          {% else %}
+            <a class="btn btn-brand" href="{% url 'blood_requests:offer_help' r.pk %}">I can help</a>
+          {% endif %}
+
+          <div class="mt-2 d-flex gap-2">
+            <a class="btn btn-sm btn-outline-success" target="_blank" rel="noopener" href="{{ r.whatsapp_url }}">Share on WhatsApp</a>
+            <a class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener" href="{{ r.telegram_url }}">Telegram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No open requests right now.</p>
+  {% endfor %}
+
+  <p class="text-muted small">Patient names and phone numbers are never shown here. Donation is always free. Never pay a donor.</p>
+</div>
+{% endblock %}

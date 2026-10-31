@@ -5,6 +5,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from datetime import timedelta
 from django.utils import timezone
 from donors.models import DonorProfile
+from .keywords import find_scam_words
+from django.urls import reverse
+
+from blood_requests.models import Notification
 
 from .forms import ContactRequestForm, ReportForm
 from .models import ContactRequest, Report
@@ -50,6 +54,11 @@ def request_contact(request, donor_id):
             contact = form.save(commit=False)
             contact.seeker = request.user
             contact.donor = donor
+            found = find_scam_words(contact.message)
+            if found:
+                contact.is_flagged = True
+                contact.flagged_words = ", ".join(found)
+                messages.warning(request, "Your message mentions money. Donation is always free, and the admin may review this message.")
             contact.save()
             messages.success(request, "Your request was sent. The donor will see it on their dashboard.")
             return redirect("donors:search")
@@ -86,6 +95,18 @@ def respond_to_request(request, request_id, decision):
 
     contact.status = decision  # "accepted" or "declined"
     contact.save()
+
+    # Tell the seeker the answer (FR-CON-05). The link opens "My requests",
+    # where the phone number appears only if the donor accepted.
+    if decision == "accepted":
+        text = f"{contact.donor.full_name} accepted your contact request. You can now see their phone number."
+    else:
+        text = "A donor declined your contact request."
+    Notification.objects.create(
+        user=contact.seeker,
+        message=text,
+        link=reverse("trust:sent_requests"),
+    )
 
     if decision == "accepted":
         messages.success(request, "You accepted the request.")

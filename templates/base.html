@@ -44,7 +44,7 @@
 
         <div class="navbar-nav mx-auto">
           <a class="nav-link" href="#">Find Donors</a>
-          <a class="nav-link" href="#">Requests</a>
+          <a class="nav-link" href="{% url 'blood_requests:request_list' %}">Requests</a>
 
           <!-- Fixed: added nav-link class for matching style and alignment -->
           <a class="nav-link" href="{% url 'banks:stock_board' %}">
@@ -64,9 +64,7 @@
 
           {% if user.is_authenticated %}
 
-          <a class="nav-link" href="#">
-            <i class="bi bi-bell"></i> Alerts
-          </a>
+          <a class="nav-link" href="{% url 'blood_requests:notification_list' %}"><i class="bi bi-bell"></i> Alerts{% if unread_count %} <span class="badge bg-danger">{{ unread_count }}</span>{% endif %}</a>
 
           <span class="nav-link">Hi, {{ user.username }}</span>
 
