@@ -43,21 +43,11 @@
       <div class="collapse navbar-collapse" id="mainNav">
 
         <div class="navbar-nav mx-auto">
-          <a class="nav-link" href="#">Find Donors</a>
+          <a class="nav-link" href="{% url 'donors:search' %}">Find Donors</a>
           <a class="nav-link" href="{% url 'blood_requests:request_list' %}">Requests</a>
-
-          <!-- Fixed: added nav-link class for matching style and alignment -->
-          <a class="nav-link" href="{% url 'banks:stock_board' %}">
-            Blood Banks
-          </a>
-
-          <a class="nav-link" href="{% url 'organs:organ_pledge_info' %}">
-            Organ Pledge
-          </a>
-
-          <a class="nav-link" href="{% url 'core:awareness' %}">
-    Awareness
-</a>
+          <a class="nav-link" href="{% url 'banks:stock_board' %}">Blood Banks</a>
+          <a class="nav-link" href="{% url 'organs:organ_pledge_info' %}">Organ Pledge</a>
+          <a class="nav-link" href="{% url 'core:awareness' %}">Awareness</a>
         </div>
 
         <div class="navbar-nav align-items-lg-center">
@@ -66,6 +56,8 @@
 
           <a class="nav-link" href="{% url 'blood_requests:notification_list' %}"><i class="bi bi-bell"></i> Alerts{% if unread_count %} <span class="badge bg-danger">{{ unread_count }}</span>{% endif %}</a>
 
+          <a class="nav-link" href="{% url 'donors:edit_profile' %}">My profile</a>
+          
           <span class="nav-link">Hi, {{ user.username }}</span>
 
           <form method="post" action="{% url 'accounts:logout' %}" class="d-flex">

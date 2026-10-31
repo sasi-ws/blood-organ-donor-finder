@@ -35,7 +35,7 @@
   </form>
 
   {# TODO: replace href="#" with the post-request URL once P4's page exists #}
-  <a href="#" class="btn btn-brand-outline">Post an emergency request</a>
+  <a href="{% url 'blood_requests:post_request' %}" class="btn btn-brand-outline">Post an emergency request</a>
 </section>
 
 <section class="mb-4">
