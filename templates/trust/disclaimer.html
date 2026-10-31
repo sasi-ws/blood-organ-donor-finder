@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Medical disclaimer | {% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 760px;">
+  <h1 class="h3">Medical disclaimer</h1>
+
+  <div class="alert alert-warning">
+    This platform connects people; it does not replace hospitals or blood banks. Always confirm donor eligibility with a medical professional.
+  </div>
+
+  <ul>
+    <li>We do not give medical advice, and nothing here is a diagnosis.</li>
+    <li>Eligibility information on this site is general and may differ from the rules of your local blood bank or national blood service. Always follow their guidance.</li>
+    <li>Every donor is checked privately by trained staff at the blood bank or hospital before any donation.</li>
+    <li>An organ pledge records a wish. It is not a legal contract. Local law and your family's decision may apply, and hospitals and transplant authorities handle any matching.</li>
+    <li>Donation is always free. Never pay a donor, and report anyone who asks for money.</li>
+  </ul>
+
+  <p class="text-muted small">See also our <a href="{% url 'trust:privacy' %}">privacy policy</a>.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 600px;">
+  <a href="{% url 'blood_requests:request_list' %}" class="text-danger fw-bold small">Back to requests</a>
+  <h1 class="mt-2">A donor can help</h1>
+  <p class="text-muted">Your {{ r.blood_group }} request, {{ r.hospital }}</p>
+
+  <div class="card mb-3 border-danger"><div class="card-body">
+    <div class="small fw-bold text-danger">UNITS COVERED</div>
+    <div class="display-5 fw-bold text-danger">{{ covered }} of {{ r.units }}</div>
+    <div class="small text-muted">The request stays open until all units are covered.</div>
+  </div></div>
+
+  <div class="card mb-3"><div class="card-body">
+    <div class="small fw-bold text-danger">LIVE TRACKER</div>
+    <div class="d-flex justify-content-between text-center mt-2">
+      <div><strong class="fs-4">{{ tracker.alerted }}</strong><br>alerted</div>
+      <div><strong class="fs-4">{{ tracker.viewed }}</strong><br>viewed</div>
+      <div><strong class="fs-4 text-success">{{ tracker.accepted }}</strong><br>accepted</div>
+    </div>
+  </div></div>
+
+  {% for resp in responses %}
+    <div class="card mb-3"><div class="card-body">
+      <h5>
+        <span class="badge text-bg-light fs-5">{{ resp.donor.donorprofile.blood_group }}</span>
+        {{ resp.donor.donorprofile.full_name }}
+        {% if resp.donor.donorprofile.is_verified %}<span class="badge bg-success">Verified</span>{% endif %}
+      </h5>
+      <div class="text-muted small">Phone number, shared with you only</div>
+      <div class="fs-4 fw-bold mb-2">{{ resp.donor.donorprofile.phone }}</div>
+      {% if resp.donated %}
+        <span class="badge bg-success p-2">Donation done</span>
+      {% else %}
+        <a class="btn btn-brand w-100 mb-2" href="tel:{{ resp.donor.donorprofile.phone }}">Call donor</a>
+        <form method="post" action="{% url 'blood_requests:donation_done' r.pk resp.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger w-100">Mark donation done</button>
+        </form>
+      {% endif %}
+    </div></div>
+  {% empty %}
+    <p>No donors have offered yet.</p>
+  {% endfor %}
+
+  <p class="text-muted small">Donation is always free. Never pay a donor. Report anyone who asks for money.</p>
+</div>
+{% endblock %}
