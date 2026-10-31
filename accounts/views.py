@@ -24,7 +24,9 @@ def register(request):
         user = form.save()
         login(request, user)
         messages.success(request, "Your account was created. Welcome!")
-        # TODO (P2): send new donors to the donor profile page
+        if user.role == "donor":
+            messages.info(request, "Please complete your donor profile so people can find you.")
+            return redirect("donors:edit_profile")
         return redirect("core:home")
 
     return render(request, "accounts/register.html", {"form": form})
