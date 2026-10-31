@@ -12,6 +12,15 @@
     <div class="small text-muted">The request stays open until all units are covered.</div>
   </div></div>
 
+  <div class="card mb-3"><div class="card-body">
+    <div class="small fw-bold text-danger">LIVE TRACKER</div>
+    <div class="d-flex justify-content-between text-center mt-2">
+      <div><strong class="fs-4">{{ tracker.alerted }}</strong><br>alerted</div>
+      <div><strong class="fs-4">{{ tracker.viewed }}</strong><br>viewed</div>
+      <div><strong class="fs-4 text-success">{{ tracker.accepted }}</strong><br>accepted</div>
+    </div>
+  </div></div>
+
   {% for resp in responses %}
     <div class="card mb-3"><div class="card-body">
       <h5>
