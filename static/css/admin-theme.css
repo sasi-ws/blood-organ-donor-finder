@@ -1,0 +1,36 @@
+/* Django admin in the Donor Finder colours */
+:root,
+html[data-theme="light"] {
+  --primary: #C62828;
+  --secondary: #8f1b1b;
+  --accent: #FCE8E6;
+  --primary-fg: #fff;
+
+  --header-bg: #8f1b1b;
+  --header-color: #fff;
+  --header-branding-color: #fff;
+  --header-link-color: #fff;
+
+  --breadcrumbs-bg: #C62828;
+  --breadcrumbs-fg: #fff;
+  --breadcrumbs-link-fg: #fff;
+
+  --link-fg: #C62828;
+  --link-hover-color: #8f1b1b;
+  --link-selected-fg: #8f1b1b;
+
+  --button-bg: #C62828;
+  --button-hover-bg: #a31f1f;
+  --default-button-bg: #8f1b1b;
+  --default-button-hover-bg: #6f1414;
+
+  --object-tools-bg: #C62828;
+  --object-tools-hover-bg: #a31f1f;
+
+  --selected-row: #FCE8E6;
+  --message-success-bg: #dff3e6;
+}
+
+#header { border-bottom: 3px solid #C62828; }
+#site-name a { font-weight: 800; letter-spacing: .3px; }
+.module h2, .module caption, .inline-group h2 { background: #C62828; }
