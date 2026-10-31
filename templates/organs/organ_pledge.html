@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-7">
 
-            <div class="card shadow-sm border-0">
+            <div class="step-card">
                 <div class="card-body p-4">
 
                     <h1 class="h3 mb-3">
@@ -23,6 +23,9 @@
                         Register your intention to pledge organs.
                         Please discuss your decision with your family.
                     </p>
+                    <p>
+                        <a href="{% url 'organs:talk_to_family' %}" class="btn btn-brand-outline btn-sm">Talk to my family first</a>
+                    </p> 
 
                     {% if error %}
                         <div class="alert alert-danger" role="alert">
@@ -124,7 +127,7 @@
 
                         <button
                             type="submit"
-                            class="btn btn-primary w-100"
+                            class="btn btn-brand w-100"
                         >
                             {% if pledge %}
                                 Save Changes
@@ -153,7 +156,7 @@
 
                             <button
                                 type="submit"
-                                class="btn btn-outline-danger w-100"
+                                class="btn btn-brand-outline w-100"
                             >
                                 Withdraw Pledge
                             </button>
