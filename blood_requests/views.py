@@ -144,16 +144,23 @@ def offer_help(request, pk):
 
 @login_required
 def offers_received(request, pk):
-    """Requester only: units covered, donor cards, phone numbers."""
+    """Requester only: units covered, live tracker, donor cards, phone numbers."""
     blood_request = get_object_or_404(BloodRequest, pk=pk, requester=request.user)
     responses = blood_request.responses.filter(can_help=True).select_related(
         "donor", "donor__donorprofile"
     )
     covered = responses.count()
+
+    alerts = Notification.objects.filter(message__contains=f"(#{blood_request.pk})")
+    tracker = {
+        "alerted": alerts.count(),
+        "viewed": alerts.filter(is_read=True).count(),
+        "accepted": covered,
+    }
     return render(
         request,
         "blood_requests/offers_received.html",
-        {"r": blood_request, "responses": responses, "covered": covered},
+        {"r": blood_request, "responses": responses, "covered": covered, "tracker": tracker},
     )
 
 
