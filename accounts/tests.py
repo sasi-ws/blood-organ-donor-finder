@@ -90,3 +90,14 @@ class AccountTests(TestCase):
         response = self.client.get(reverse("accounts:delete"))
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response.url)
+    
+    def test_new_donor_is_sent_to_profile_form(self):
+        response = self.client.post(reverse("accounts:register"), {
+            "username": "donorredirect",
+            "email": "dr@example.com",
+            "role": "donor",
+            "password1": "StrongPass123",
+            "password2": "StrongPass123",
+            "agree": "on",
+        })
+        self.assertRedirects(response, reverse("donors:edit_profile"))
