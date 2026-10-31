@@ -25,6 +25,9 @@
             {% elif r.urgency == 'urgent' %}<span class="badge bg-warning text-dark">Urgent</span>
             {% else %}<span class="badge bg-secondary">Normal</span>{% endif %}
             <span class="badge bg-light text-dark">{{ r.accepted }} donor{{ r.accepted|pluralize }} accepted</span>
+            <span class="badge bg-light text-dark">
+              {% if r.alert_stage == 1 %}Stage 1: city notified{% elif r.alert_stage == 2 %}Stage 2: nearby cities notified{% else %}Stage 3: whole district notified{% endif %}
+            </span>
           </div>
         </div>
         <div>

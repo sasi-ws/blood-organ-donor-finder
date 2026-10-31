@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .alerts import send_alerts
+from .alerts import escalate_if_needed, send_alerts
 from .forms import BloodRequestForm
 from .models import BloodRequest, DonorResponse, Notification
 from .offers import check_can_offer
@@ -34,7 +34,7 @@ def post_request(request):
 def request_list(request):
     """Open requests: critical first, then urgent, then normal, then newest."""
     cutoff = timezone.now() - timedelta(hours=48)
-    open_requests = (
+    open_requests = list(
         BloodRequest.objects.filter(status="open", created_at__gte=cutoff)
         .annotate(
             urgency_rank=Case(
@@ -47,6 +47,12 @@ def request_list(request):
         )
         .order_by("urgency_rank", "-created_at")
     )
+
+    # Widen the alert to more donors if the request has moved to a new stage.
+    for r in open_requests:
+        if escalate_if_needed(r):
+            r.refresh_from_db(fields=["alert_stage"])
+
     offered_ids = set()
     if request.user.is_authenticated:
         offered_ids = set(
