@@ -22,12 +22,12 @@
     <div class="col-12 col-md-5">
       <label for="city" class="form-label small text-secondary mb-1">City</label>
       <select id="city" name="city" class="form-select">
-        <option>Colombo</option>
-        <option>Gampaha</option>
-        <option>Negombo</option>
-        <option>Kandy</option>
-        <option>Galle</option>
-      </select>
+  {% for district, towns in districts.items %}
+  <optgroup label="{{ district }}">
+    {% for town in towns %}<option value="{{ town }}">{{ town }}</option>{% endfor %}
+  </optgroup>
+  {% endfor %}
+</select>
     </div>
     <div class="col-12 col-md-3">
       <button type="submit" class="btn btn-brand w-100">Find donors</button>
