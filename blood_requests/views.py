@@ -13,7 +13,7 @@ from .alerts import escalate_if_needed, send_alerts
 from .forms import BloodRequestForm
 from .models import BloodRequest, DonorResponse, Notification
 from .offers import check_can_offer
-
+from urllib.parse import quote
 
 @login_required
 def post_request(request):
@@ -59,6 +59,20 @@ def request_list(request):
             DonorResponse.objects.filter(donor=request.user, can_help=True)
             .values_list("request_id", flat=True)
         )
+
+    # Share links: no patient name and no phone number in the message.
+    page_url = request.build_absolute_uri(reverse("blood_requests:request_list"))
+    for r in open_requests:
+        text = (
+            f"URGENT: {r.blood_group} {r.get_blood_type_display().lower()} needed at "
+            f"{r.hospital}, {r.city}, by {r.needed_by:%d %b, %I:%M %p}. "
+            f"Details: {page_url}"
+        )
+        r.whatsapp_url = "https://wa.me/?text=" + quote(text)
+        r.telegram_url = (
+            "https://t.me/share/url?url=" + quote(page_url) + "&text=" + quote(text)
+        )
+
     return render(
         request,
         "blood_requests/request_list.html",
