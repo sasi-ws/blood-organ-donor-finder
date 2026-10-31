@@ -1,34 +1,37 @@
-
 {% extends "base.html" %}
+{% block title %}Organ pledge information{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Organ Pledge Information</h1>
-
-    <p>
-        An organ pledge records your intention to donate organs
-        or tissues in the future. It is important to understand
-        your decision and discuss it with your family.
-    </p>
-
-    <h2>Before You Make a Pledge</h2>
-    <ul>
-        <li>Learn about organ and tissue donation.</li>
-        <li>Discuss your wishes with your family.</li>
-        <li>Provide accurate family contact information.</li>
-        <li>Read the consent statement before submitting.</li>
-    </ul>
-
-    <h2>What Happens Next?</h2>
-    <p>
-        You can select the organs or tissues you wish to pledge
-        and provide a family contact. This form records your
-        intention; it does not confirm medical eligibility or
-        guarantee that donation will take place.
-    </p>
-
-    <a href="{% url 'organs:organ_pledge' %}">
-        Continue to Organ Pledge Form
-    </a>
+<div class="hero mb-3">
+  <h1 class="h3 fw-bold">What a pledge means</h1>
+  <p class="mb-2">
+    An organ pledge records your wish to donate organs or tissues after your death.
+    It is not a legal contract, and it does not match you with a patient.
+  </p>
+  <p class="mb-0">
+    Your family is usually asked to confirm your wish, so please talk to them first.
+    We will send your family contact a short information email.
+  </p>
 </div>
-{% endblock %}  
+
+<div class="step-card mb-3">
+  <h2 class="h5 fw-bold">Before you make a pledge</h2>
+  <ul class="mb-0">
+    <li>Learn about organ and tissue donation.</li>
+    <li>Discuss your wishes with your family.</li>
+    <li>Give accurate family contact details.</li>
+    <li>Read the consent statement before submitting.</li>
+  </ul>
+</div>
+
+<div class="step-card mb-3">
+  <h2 class="h5 fw-bold">What happens next</h2>
+  <p class="text-secondary mb-3">
+    You choose the organs or tissues you wish to pledge and add a family contact.
+    This form records your intention. It does not confirm medical eligibility
+    or guarantee that donation will take place. You can edit or withdraw it at any time.
+  </p>
+  <a href="{% url 'organs:organ_pledge' %}" class="btn btn-brand">Continue to pledge form</a>
+  <a href="{% url 'organs:talk_to_family' %}" class="btn btn-brand-outline">Talk to my family first</a>
+</div>
+{% endblock %}

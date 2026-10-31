@@ -54,6 +54,7 @@
   border-radius: 8px;
 }
 
+
 /* ---------- Status pills ---------- */
 .pill {
   display: inline-block;
@@ -76,4 +77,16 @@
   padding: 0.375rem 0.75rem;
   border: 1px solid #ced4da;
   border-radius: 8px;
+}
+
+/* Accordion in the brand colours */
+.accordion-button:not(.collapsed),
+.accordion-item .accordion-button:not(.collapsed) {
+  background-color: #FCE8E6 !important;
+  color: #C62828 !important;
+  box-shadow: none !important;
+}
+.accordion-button:focus {
+  border-color: #C62828 !important;
+  box-shadow: 0 0 0 0.2rem rgba(198, 40, 40, 0.2) !important;
 }
