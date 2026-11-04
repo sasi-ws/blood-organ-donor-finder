@@ -60,7 +60,15 @@ def request_contact(request, donor_id):
                 contact.flagged_words = ", ".join(found)
                 messages.warning(request, "Your message mentions money. Donation is always free, and the admin may review this message.")
             contact.save()
-            messages.success(request, "Your request was sent. The donor will see it on their dashboard.")
+
+            # Alert the donor (the bell). donor is a DonorProfile, so use donor.user
+            Notification.objects.create(
+                user=donor.user,
+                message=f"{request.user.username} sent you a contact request.",
+                link=reverse("trust:my_requests"),
+            )
+
+            messages.success(request, "Your request was sent. The donor will see it in their Alerts and on the Contact requests page.")
             return redirect("donors:search")
     else:
         form = ContactRequestForm()
