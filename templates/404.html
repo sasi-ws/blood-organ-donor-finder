@@ -2,10 +2,23 @@
 {% block title %}Page not found{% endblock %}
 
 {% block content %}
-<div class="text-center py-5">
-  <h1 class="display-4 fw-bold text-brand">404</h1>
-  <p class="lead">Sorry, we could not find that page.</p>
-  <p class="text-secondary">It may have moved, or the address may be wrong.</p>
-  <a href="/" class="btn btn-brand">Back to home</a>
+<div class="hero text-center mb-4">
+  <div class="display-1 fw-bold text-brand">404</div>
+  <h1 class="h3 fw-bold">Sorry, we could not find that page.</h1>
+  <p class="text-secondary mb-3">
+    It may have moved, or the address may be wrong. Please check the link and try again.
+  </p>
+  <a href="{% url 'core:home' %}" class="btn btn-brand">Back to home</a>
+  <a href="{% url 'donors:search' %}" class="btn btn-brand-outline">Find donors</a>
+</div>
+
+<div class="step-card">
+  <h2 class="h6 fw-bold">Looking for something?</h2>
+  <div class="d-flex flex-wrap gap-2">
+    <a href="{% url 'blood_requests:request_list' %}" class="btn btn-brand-outline btn-sm">Open requests</a>
+    <a href="{% url 'banks:stock_board' %}" class="btn btn-brand-outline btn-sm">Blood banks</a>
+    <a href="{% url 'organs:organ_pledge_info' %}" class="btn btn-brand-outline btn-sm">Organ pledge</a>
+    <a href="{% url 'core:awareness' %}" class="btn btn-brand-outline btn-sm">Awareness</a>
+  </div>
 </div>
 {% endblock %}
